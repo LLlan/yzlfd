@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="keHuPcMapper">
+	<!--  
+		获取指定用户的积分、股权、虚拟币
+	-->
+	<select id="getGuXuJiByUserId" parameterType="pd" resultType="pd">
+		SELECT
+			tuk.xunibi,
+			tuk.userName,
+			tuk.guquan,
+			tuk.jifen
+		FROM
+			tb_user_kehu tuk
+		WHERE
+			tuk.user_kuhu_id = #{user_kuhu_id}
+	</select>
+	<!--  
+		获取科类信息（主科类以及其子科类）
+	-->
+	<select id="getDataIndexOfZhaoYiSheng" parameterType="pd" resultType="pd">
+		SELECT
+			sk.keleiName name1,
+			sk.kelei_id,
+			ssk.keleiName name2
+		FROM
+			sys_kelei sk
+		LEFT JOIN (
+			SELECT
+				GROUP_CONCAT(syk.keleiName) keleiName,
+				syk.kelei_id,
+				syk.parent_id
+			FROM
+				sys_kelei syk
+			GROUP BY
+				syk.parent_id
+		) ssk ON sk.kelei_id = ssk.parent_id
+		WHERE
+			sk.parent_id = '0'
+	</select>
+	<!--  
+		获取找机构（类型以及旗下的机构名称）
+	-->
+	<select id="getDataIndexOfZhaoJiGou" parameterType="pd" resultType="pd">
+		SELECT
+			GROUP_CONCAT(tus.user_shanghu_id) user_shanghu_id,
+			GROUP_CONCAT(tus.youName) youName,
+			tus.dengji
+		FROM
+			sys_jigou_type sjt
+		LEFT JOIN tb_user_shanghu tus ON tus.dengji = sjt.typeName
+		WHERE tus.dengji!='' and tus.renZhengState = 1
+		GROUP BY
+			tus.dengji
+	</select>
+	<!--  
+		获取找药商（类型以及旗下的药店名称）
+	-->
+	<select id="getDataIndexOfZhaoYaoShang" parameterType="pd" resultType="pd">
+		SELECT
+			GROUP_CONCAT(tus.user_shanghu_id) user_shanghu_id,
+			GROUP_CONCAT(tus.youName) youName,
+			tus.category
+		FROM tb_user_shanghu tus
+		WHERE tus.identity='3' and tus.category!='' and tus.renZhengState = 1
+		GROUP BY
+			tus.category
+	</select>
+	<!--  
+		获取疑难杂症（分组字母以及名称）
+	-->
+	<select id="getDataIndexOfYiNanZaZheng" parameterType="pd" resultType="pd">
+		SELECT
+			GROUP_CONCAT(syn.ynzz_name) namess,
+			GROUP_CONCAT(syn.ynzz_id) ids,
+			UPPER(LEFT(syn.ynzz_pinyin, 1)) letter
+		FROM
+			sys_ynzz syn
+		GROUP BY
+			LEFT (syn.ynzz_pinyin, 1)
+		ORDER BY syn.ynzz_pinyin ASC
+	</select>
+	<!--  
+		获取所有疑难杂症（名称以及ID）
+	-->
+	<select id="getDataIndexOfYiNanZaZhengAll" parameterType="pd" resultType="pd">
+		SELECT
+			syn.ynzz_name,
+			syn.ynzz_id
+		FROM
+			sys_ynzz syn
+	</select>
+	<!--  
+		需求大厅中的内容
+	-->
+	<select id="getDataIndexOfXuQiuList" parameterType="pd" resultType="pd">
+		SELECT
+			tbx.xuqiu_id,
+			tuk.headImg_url,
+			tbx.sex,
+			tbx.age,
+			tbx.address,
+			tbx.disease,
+			tbx.phone,
+			tbx.fabu_time,
+			tbx.symptom,
+			ifnull(GROUP_CONCAT(txi.img_url),"") imgPaths,
+			pct.pageCount
+		FROM
+			tb_xuqiu tbx
+		LEFT JOIN tb_user_kehu tuk ON tuk.user_kuhu_id = tbx.user_kuhu_fid
+		LEFT JOIN tb_xuqiu_img txi ON txi.xuqiu_fid = tbx.xuqiu_id,
+		 (
+			SELECT
+				COUNT(*) pageCount
+			FROM
+				tb_xuqiu
+			<where>
+				<if test="user_kuhu_id!='' and user_kuhu_id!=null">
+					user_kuhu_fid=#{user_kuhu_id}
+				</if>
+			</where>
+		) pct
+		<where>
+			<if test="user_kuhu_id!='' and user_kuhu_id!=null">
+				tbx.user_kuhu_fid=#{user_kuhu_id}
+			</if>
+		</where>
+		GROUP BY
+			tbx.xuqiu_id
+		ORDER BY tbx.fabu_time DESC	
+		<if test='begin!=null'>
+			LIMIT #{begin},#{size}
+		</if>
+	</select>
+	<!--  
+		常见疾病
+	-->
+	<select id="getChangJianJiBingListOfIndex" parameterType="pd" resultType="pd">
+		SELECT
+			syc.changjianjibing_id,
+			syc.jibing_name
+		FROM sys_changjianjibing syc
+	</select>
+	<!--  
+		新闻公告
+	-->
+	<select id="getNewsAndNoticeList" parameterType="pd" resultType="pd">
+		SELECT 
+			*
+		FROM sys_newsandnotice 
+		<where>
+			category=#{category}
+		</where>
+		ORDER BY addTime DESC
+	</select>
+	<!--  
+		疑难杂症列表
+	-->
+	<select id="getYiNanZaZhengList" parameterType="pd" resultType="pd">
+		SELECT
+			syz.*, pct.pageCount
+		FROM
+			sys_ynzz syz,
+			(
+				SELECT
+					COUNT(*) pageCount
+				FROM
+					sys_ynzz
+			) pct
+		ORDER BY
+			syz.add_time DESC
+		LIMIT #{begin},#{size}
+	</select>
+	<!--  
+		常见疾病列表
+	-->
+	<select id="getChangJianJiBingList" parameterType="pd" resultType="pd">
+		SELECT
+			syz.*, pct.pageCount
+		FROM
+			sys_changjianjibing syz,
+			(
+				SELECT
+					COUNT(*) pageCount
+				FROM
+					sys_changjianjibing
+			) pct
+		ORDER BY
+			syz.addTime DESC
+		LIMIT #{begin},#{size}
+	</select>
+	<!-- 
+		医生列表 
+	-->
+	<select id="getyishengList" parameterType="pd" resultType="pd">
+		select 
+			tus.user_shanghu_id,
+			tus.youName,
+			tus.position,
+			tus.mark,
+			tus.introduct,
+			tus.headImg,
+			tus.keshiName,
+			tus.category,
+			tus.goodField,
+			COUNT(toy.user_shanghu_fid) num,
+			pct.pageCount
+		from tb_user_shanghu tus
+		LEFT JOIN tb_order_yisheng toy ON toy.user_shanghu_fid=tus.user_shanghu_id,
+		(
+			SELECT
+				COUNT(*) pageCount
+			FROM
+				tb_user_shanghu
+			<where> 
+			<if test="content!='' and content!=null">
+				(introduct LIKE CONCAT(CONCAT('%', #{content}),'%')
+				or goodField LIKE CONCAT(CONCAT('%', #{content}),'%')
+				or youName LIKE CONCAT(CONCAT('%', #{content}),'%')
+				or position LIKE CONCAT(CONCAT('%', #{content}),'%')
+				or mark LIKE CONCAT(CONCAT('%', #{content}),'%')
+				or address LIKE CONCAT(CONCAT('%', #{content}),'%')
+				or keshiName LIKE CONCAT(CONCAT('%', #{content}),'%'))
+			</if> 
+			<if test="address!='' and address!=null">
+				and address LIKE CONCAT(CONCAT('%', #{address}),'%')
+			</if>
+			<if test="category!='' and category!=null">
+				and category =#{category}
+			</if>
+			<if test="zikelei!='' and zikelei!=null">
+				and keshiName = #{zikelei}
+			</if>
+			<if test="zikelei=='' or zikelei==null">
+				<if test="zhukelei!='' and zhukelei!=null">
+				and keshiName in (
+					SELECT
+						keleiName
+					FROM
+						sys_kelei sk		
+					WHERE
+						sk.parent_id = #{zhukelei}
+				)
+				</if>
+			</if>
+			and renZhengState = 1
+			and identity = 1
+			</where>
+		) pct
+		<where>  
+		<if test="content!='' and content!=null">
+			(tus.introduct LIKE CONCAT(CONCAT('%', #{content}),'%')
+			or tus.goodField LIKE CONCAT(CONCAT('%', #{content}),'%')
+			or tus.youName LIKE CONCAT(CONCAT('%', #{content}),'%')
+			or tus.position LIKE CONCAT(CONCAT('%', #{content}),'%')
+			or tus.mark LIKE CONCAT(CONCAT('%', #{content}),'%')
+			or tus.address LIKE CONCAT(CONCAT('%', #{content}),'%')
+			or tus.keshiName LIKE CONCAT(CONCAT('%', #{content}),'%'))
+		</if>
+		<if test="address!='' and address!=null">
+			and tus.address LIKE CONCAT(CONCAT('%', #{address}),'%')
+		</if>
+		<if test="category!='' and category!=null">
+			and tus.category =#{category}
+		</if>
+		<if test="zikelei!='' and zikelei!=null">
+			and tus.keshiName = #{zikelei}
+		</if>
+		<if test="zikelei=='' or zikelei==null">
+			<if test="zhukelei!='' and zhukelei!=null">
+			and tus.keshiName in (
+				SELECT
+					keleiName
+				FROM
+					sys_kelei sk		
+				WHERE
+					sk.parent_id = #{zhukelei}
+			)
+			</if>
+		</if>
+		and tus.renZhengState = 1
+		and tus.identity = 1
+		</where>
+		GROUP BY tus.user_shanghu_id
+		LIMIT #{begin},#{size}
+	</select>
+	
+	<!-- 
+		机构列表 
+	-->
+	<select id="getjigouList" parameterType="pd" resultType="pd">
+		SELECT
+			tus.user_shanghu_id,
+			tus.mark,
+			tus.headImg,
+			tus.goodField,
+			tus.dengji,
+			tus.youName,
+			tus.introduct,
+			tus.linkMethod,
+			COUNT(toj.order_jigou_id) num,
+			pct.pageCount
+		FROM
+			tb_user_shanghu tus
+		LEFT JOIN tb_order_jigou toj ON tus.user_shanghu_id = toj.user_shanghu_fid,
+		(
+			SELECT
+				COUNT(*) pageCount
+			FROM
+				tb_user_shanghu
+			<where> 
+			<if test="content!='' and content!=null">
+				(introduct LIKE CONCAT(CONCAT('%', #{content}),'%')
+				or goodField LIKE CONCAT(CONCAT('%', #{content}),'%')
+				or youName LIKE CONCAT(CONCAT('%', #{content}),'%')
+				or position LIKE CONCAT(CONCAT('%', #{content}),'%')
+				or mark LIKE CONCAT(CONCAT('%', #{content}),'%')
+				or address LIKE CONCAT(CONCAT('%', #{content}),'%')
+				or dengji LIKE CONCAT(CONCAT('%', #{content}),'%')
+				)
+			</if> 
+			<if test="address!='' and address!=null">
+				and address LIKE CONCAT(CONCAT('%', #{address}),'%')
+			</if>
+			<if test="dengji!='' and dengji!=null">
+				and dengji = #{dengji}
+			</if>
+			and renZhengState = 1
+			and identity = 2
+			</where>
+		) pct
+		<where>  
+		<if test="content!='' and content!=null">
+			(introduct LIKE CONCAT(CONCAT('%', #{content}),'%')
+			or goodField LIKE CONCAT(CONCAT('%', #{content}),'%')
+			or youName LIKE CONCAT(CONCAT('%', #{content}),'%')
+			or position LIKE CONCAT(CONCAT('%', #{content}),'%')
+			or mark LIKE CONCAT(CONCAT('%', #{content}),'%')
+			or address LIKE CONCAT(CONCAT('%', #{content}),'%')
+			or dengji LIKE CONCAT(CONCAT('%', #{content}),'%')
+			)
+		</if> 
+		<if test="address!='' and address!=null">
+			and address LIKE CONCAT(CONCAT('%', #{address}),'%')
+		</if>
+		<if test="dengji!='' and dengji!=null">
+			and dengji =#{dengji}
+		</if>
+		and tus.renZhengState=1
+		and tus.identity=2
+		</where>
+		GROUP BY
+			tus.user_shanghu_id
+		LIMIT #{begin},#{size}
+	</select>
+	
+	<!-- 
+		药商列表 
+	-->
+	<select id="getYaoshangList" parameterType="pd" resultType="pd">
+		SELECT
+			tus.user_shanghu_id,
+			tus.youName,
+			tus.address,
+			tus.category,
+			tus.mark,
+			tus.introduct,
+			tus.goodField,
+			tus.headImg,
+			tus.keshiName,
+			COUNT(toy.order_yaoshang_id) num,
+			pct.pageCount
+		FROM
+			tb_user_shanghu tus
+		LEFT JOIN tb_order_yaoshang toy ON tus.user_shanghu_id = toy.user_shanghu_fid,
+		(
+			SELECT
+				COUNT(*) pageCount
+			FROM
+				tb_user_shanghu
+			<where>  
+			<if test="content!='' and content!=null">
+				(introduct LIKE CONCAT(CONCAT('%', #{content}),'%')
+				or goodField LIKE CONCAT(CONCAT('%', #{content}),'%')
+				or youName LIKE CONCAT(CONCAT('%', #{content}),'%')
+				or position LIKE CONCAT(CONCAT('%', #{content}),'%')
+				or mark LIKE CONCAT(CONCAT('%', #{content}),'%')
+				or address LIKE CONCAT(CONCAT('%', #{content}),'%')
+				)
+			</if> 
+			<if test="address!='' and address!=null">
+				and address LIKE CONCAT(CONCAT('%', #{address}),'%')
+			</if>
+			<if test="category!='' and category!=null">
+				and category = #{category}
+			</if>
+			and renZhengState = 1
+			and identity = 3
+			</where>
+		) pct
+		<where>  
+		<if test="content!='' and content!=null">
+			(introduct LIKE CONCAT(CONCAT('%', #{content}),'%')
+			or goodField LIKE CONCAT(CONCAT('%', #{content}),'%')
+			or youName LIKE CONCAT(CONCAT('%', #{content}),'%')
+			or position LIKE CONCAT(CONCAT('%', #{content}),'%')
+			or mark LIKE CONCAT(CONCAT('%', #{content}),'%')
+			or address LIKE CONCAT(CONCAT('%', #{content}),'%')
+			)
+		</if> 
+		<if test="address!='' and address!=null">
+			and address LIKE CONCAT(CONCAT('%', #{address}),'%')
+		</if>
+		<if test="category!='' and category!=null">
+			and category = #{category}
+		</if>
+		and tus.renZhengState = 1
+		and tus.identity = 3
+		</where>
+		GROUP BY
+			tus.user_shanghu_id		
+		LIMIT #{begin},#{size}
+	</select>
+	<!--  
+		获取产品信息
+	-->
+	<select id="getChanPinInformation" parameterType="pd" resultType="pd">
+		SELECT
+			tus.youName,
+			tus.address,
+			tbf.fuwu_id,
+			tbf.fuwu_jibing_name,
+			tbf.price,
+			tbf.type
+		FROM
+			tb_fuwu tbf
+		LEFT JOIN tb_user_shanghu tus ON tus.user_shanghu_id = tbf.user_shanghu_fid
+		WHERE
+			tbf.fuwu_id=#{fuwu_id}
+	</select>
+	<!-- 系统设置 关于我们 网站后台功能-->
+	<!--  
+		获取关于我们列表
+	-->	
+	<select id="guanyuuslistPage" parameterType="page" resultType="pd">
+		SELECT 
+			*
+		FROM sys_guanyuwomen 
+	</select>
+	<!--  
+		获取关于我们对象信息(肯定只有一条记录)
+	-->
+	<select id="getDataOfGuanYuWoMen" parameterType="pd" resultType="pd">
+		SELECT 
+			*
+		FROM sys_guanyuwomen
+	</select>
+	<!--  
+		保存关于我们的信息
+	-->
+	<insert id="insertGuanYuWoMen" parameterType="pd">
+		INSERT INTO sys_guanyuwomen (
+			guanyuwomen_id,
+			imgPath,
+			content
+		)
+		VALUES(
+			#{guanyuwomen_id},
+			#{imgPath},
+			#{content}
+		)
+	</insert>
+	<!--  
+		更新关于我们
+	-->
+	<update id="updateGuanYuWoMen" parameterType="pd">
+		update sys_guanyuwomen
+		set
+			imgPath=#{imgPath},
+			content=#{content}
+		where guanyuwomen_id=#{guanyuwomen_id}
+	</update>
+	<!--  
+		根据ID获取对象信息
+	-->
+	<select id="getGuanYuWoMenById" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_guanyuwomen
+		WHERE 
+			guanyuwomen_id=#{guanyuwomen_id}
+	</select>
+	<!--  
+		根据ID删除指定对象信息
+	-->
+	<delete id="deleteGuanYuWoMenById" parameterType="pd">
+		DELETE 
+		FROM sys_guanyuwomen
+		WHERE guanyuwomen_id in
+		<foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

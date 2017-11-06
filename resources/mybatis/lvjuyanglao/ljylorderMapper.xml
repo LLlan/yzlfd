@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ljylorderMapper">
+
+	<!--  
+		保存临时信息
+	-->
+	<insert id="save_tb_temp_information" parameterType="pd">
+		INSERT INTO tb_temp(
+			temp_id,
+			order_number,
+			fuwu_id,
+			xingming,
+			dianhua,
+			dizhi,
+			beizhu,
+			number,
+			xnbNum,
+			user_kuhu_fid
+		)VALUES(
+			#{temp_id},
+			#{order_number},
+			#{fuwu_id},
+			#{xingming},
+			#{dianhua},
+			#{dizhi},
+			#{beizhu},
+			#{number},
+			#{xnbNum},
+			#{user_kuhu_fid}
+		)
+	</insert>
+	<!--  
+		保存临时信息
+	-->
+	<insert id="save_tb_temp_information1" parameterType="pd">
+		INSERT INTO tb_temp(
+			temp_id,
+			order_number,
+			fuwu_id,
+			xingming,
+			dianhua,
+			dizhi,
+			beizhu,
+			number,
+			WIDsubject,
+			WIDtotal_fee,
+			WIDbody,
+			WIDshow_url,
+			user_kuhu_fid
+		)VALUES(
+			#{temp_id},
+			#{order_number},
+			#{fuwu_id},
+			#{xingming},
+			#{dianhua},
+			#{dizhi},
+			#{beizhu},
+			#{number},
+			#{WIDsubject},
+			#{WIDtotal_fee},
+			#{WIDbody},
+			#{WIDshow_url},
+			#{user_kuhu_fid}
+		)
+	</insert>
+	<!--  
+		根据订单的订单编号，获取临时信息
+	-->
+	<select id="get_tb_temp_information" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM
+			tb_temp 
+		WHERE
+			order_number = #{order_number}
+	</select>
+
+
+
+	<!--  
+		创建医生类订单
+	-->
+	<insert id="saveOrderOfYiSheng" parameterType="pd">
+		INSERT INTO tb_order_yisheng(
+			order_yisheng_id,
+			order_number,
+			create_order_time,
+			fuwu_jibing_name,
+			jibing_introdaction,
+			price,
+			pay_method,
+			pay_number,
+			order_state,
+			user_kuhu_fid,
+			user_shanghu_fid,
+			kehuPrice,
+			pingtaiPrice,
+			fuwubili
+		)VALUES(
+			#{order_yisheng_id},
+			#{order_number},
+			#{create_order_time},
+			#{fuwu_jibing_name},
+			#{jibing_introdaction},
+			#{price},
+			#{pay_method},
+			#{pay_number},
+			#{order_state},
+			#{user_kuhu_fid},
+			#{user_shanghu_fid},
+			#{kehuPrice},
+			#{pingtaiPrice},
+			#{fuwubili}
+		)
+	</insert>
+	<!--  
+		创建机构类订单
+	-->
+	<insert id="saveOrderOfJiGou" parameterType="pd">
+		INSERT INTO tb_order_jigou (
+			order_jigou_id,
+			order_number,
+			create_order_time,
+			user_kuhu_fid,
+			user_shanghu_fid,
+			fuwu_name,
+			price,
+			fuwu_introdaction,
+			pay_method,
+			pay_number,
+			order_state,
+			kehuPrice,
+			pingtaiPrice,
+			fuwubili
+		)
+		VALUES
+			(
+				#{order_jigou_id},
+				#{order_number},
+				#{create_order_time},
+				#{user_kuhu_fid},
+				#{user_shanghu_fid},
+				#{fuwu_name},
+				#{price},
+				#{fuwu_introdaction},
+				#{pay_method},
+				#{pay_number},
+				#{order_state},
+				#{kehuPrice},
+				#{pingtaiPrice},
+				#{fuwubili}
+			)
+	</insert>
+	<!--  
+		创建药商类订单
+	-->
+	<insert id="saveOrderOfYaoShang" parameterType="pd">
+		INSERT INTO tb_order_yaoshang (
+			order_yaoshang_id,
+			order_number,
+			create_order_time,
+			user_kuhu_fid,
+			user_shanghu_fid,
+			fuwu_name,
+			price,
+			type,
+			identity,
+			fuwu_introdaction,
+			pay_method,
+			pay_number,
+			order_state,
+			xingming,
+			dianhua,
+			dizhi,
+			beizhu,
+			number,
+			xnbNum,
+			totalPrice,
+			shanghuPrice,
+			kehuPrice,
+			pingtaiPrice,
+			fuwubili
+		)
+		VALUES
+			(
+				#{order_yaoshang_id},
+				#{order_number},
+				#{create_order_time},
+				#{user_kuhu_fid},
+				#{user_shanghu_fid},
+				#{fuwu_name},
+				#{price},
+				#{type},
+				#{identity},
+				#{fuwu_introdaction},
+				#{pay_method},
+				#{pay_number},
+				#{order_state},
+				#{xingming},
+				#{dianhua},
+				#{dizhi},
+				#{beizhu},
+				#{number},
+				#{xnbNum},
+				#{totalPrice},
+				#{shanghuPrice},
+				#{kehuPrice},
+				#{pingtaiPrice},
+				#{fuwubili}
+			)
+	</insert>
+	<!--  
+		根据主键ID,更新用户的现金金额和成交金额
+	-->
+	<update id="updateXianJinAndChengJiaoAmount" parameterType="pd">
+		UPDATE tb_user_shanghu tus
+		SET 
+			tus.chengjiaoAmount = #{chengjiaoAmount},
+			tus.xianjinAmount = #{xianjinAmount}
+		WHERE
+			tus.user_shanghu_id = #{user_shanghu_id}
+	</update>
+	<!--  
+		根据订单的订单编号，获取订单信息
+	-->
+	<select id="getOrderOfYiShengByOrderNumber" parameterType="pd" resultType="pd">
+		SELECT
+			toy.*
+		FROM
+			tb_order_yisheng toy
+		WHERE
+			toy.order_number = #{order_number}
+	</select>
+	<!--  
+		医生获取订单信息（待就诊、已完成）
+	-->
+	<select id="getOrderOfYiSheng" parameterType="pd" resultType="pd">
+		SELECT
+			toy.order_yisheng_id,
+			toy.order_yisheng_id order_id,
+			tuk.realName,
+			tuk.sex,
+			tuk.age,
+			tuk.address,
+			tuk.phone,
+			toy.complete_time,
+			toy.fuwu_jibing_name,
+			toy.fuwu_jibing_name fuwu_name,
+			toy.price,
+			toy.kehuPrice,
+			tuk.user_kuhu_id,
+			tuk.realName,
+			tus.user_shanghu_id,
+			tus.youName
+		FROM
+			tb_order_yisheng toy
+		LEFT JOIN tb_user_kehu tuk ON tuk.user_kuhu_id = toy.user_kuhu_fid
+		LEFT JOIN tb_user_shanghu tus ON tus.user_shanghu_id = toy.user_shanghu_fid
+		WHERE
+			toy.order_state = #{order_state}
+		AND toy.user_shanghu_fid = #{user_shanghu_fid}
+	</select>
+	<!--  
+		机构获取订单信息（待就诊、已完成）
+	-->
+	<select id="getOrderOfJiGou" parameterType="pd" resultType="pd">
+		SELECT
+			toj.order_jigou_id,
+			toj.order_jigou_id order_id,
+			tuk.realName,
+			tuk.sex,
+			tuk.age,
+			tuk.address,
+			tuk.phone,
+			toj.complete_time,
+			toj.fuwu_name,
+			toj.price,
+			toj.kehuPrice,
+			tuk.user_kuhu_id,
+			tuk.realName,
+			tus.user_shanghu_id,
+			tus.youName
+		FROM
+			tb_order_jigou toj
+		LEFT JOIN tb_user_kehu tuk ON tuk.user_kuhu_id = toj.user_kuhu_fid
+		LEFT JOIN tb_user_shanghu tus ON tus.user_shanghu_id = toj.user_shanghu_fid
+		WHERE
+			toj.order_state = #{order_state}
+		AND toj.user_shanghu_fid = #{user_shanghu_fid}
+	</select>
+	<!--  
+		根据订单的订单编号，获取订单信息
+	-->
+	<select id="getOrderOfJiGouByOrderNumber" parameterType="pd" resultType="pd">
+		SELECT
+			toj.*
+		FROM
+			tb_order_jigou toj
+		WHERE
+			toj.order_number = #{order_number}
+	</select>
+	<!--  
+		药商获取订单信息（待就诊、已完成）
+	-->
+	<select id="getOrderOfYaoShang" parameterType="pd" resultType="pd">
+		SELECT
+			toy.*,
+			toy.order_yaoshang_id order_id,
+			tuk.user_kuhu_id,
+			tuk.realName,
+			tus.user_shanghu_id,
+			tus.youName
+		FROM
+			tb_order_yaoshang toy
+		LEFT JOIN tb_user_kehu tuk ON tuk.user_kuhu_id = toy.user_kuhu_fid
+		LEFT JOIN tb_user_shanghu tus ON tus.user_shanghu_id = toy.user_shanghu_fid
+		WHERE
+			toy.order_state = #{order_state}
+		AND toy.user_shanghu_fid = #{user_shanghu_fid}
+	</select>
+	<!--  
+		根据订单的订单编号，获取订单信息
+	-->
+	<select id="getOrderOfYaoShangByOrderNumber" parameterType="pd" resultType="pd">
+		SELECT
+			toy.*
+		FROM
+			tb_order_yaoshang toy
+		WHERE
+			toy.order_number = #{order_number}
+	</select>
+	<!--  
+		用户获取订单信息（待就诊、已完成）
+	-->
+	<select id="getOrderOfKeHu" parameterType="pd" resultType="pd">
+		SELECT
+			toy.order_yisheng_id,
+			tus.headImg,
+			tus.youName,
+			tus.position,
+			tus.mark,
+			toy.fuwu_jibing_name,
+			toy.price
+		FROM
+			tb_order_yisheng toy
+		LEFT JOIN tb_user_shanghu tus ON tus.user_shanghu_id = toy.user_shanghu_fid
+		WHERE
+			toy.order_state = #{order_state}
+		AND toy.user_kuhu_fid = #{user_kuhu_fid}
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--  
+		后台获取医生订单列表
+	-->
+	<select id="getOrderOfYiShenglistPage" parameterType="page" resultType="pd">
+		SELECT
+			tus.userName ysuserName,
+			tus.phone ysPhone,
+			tuk.userName khuserName,
+			tuk.phone khPhone,
+			toy.create_order_time,
+			toy.order_number,
+			toy.fuwu_jibing_name,
+			toy.jibing_introdaction,
+			toy.price,
+			toy.pay_method,
+			toy.pay_number,
+			toy.complete_time,
+			toy.order_state
+		FROM
+			tb_order_yisheng toy
+		LEFT JOIN tb_user_shanghu tus ON tus.user_shanghu_id = toy.user_shanghu_fid
+		LEFT JOIN tb_user_kehu tuk ON tuk.user_kuhu_id = toy.user_kuhu_fid
+		WHERE
+			tus.identity = '1'
+			<if test="pd.searchName!='' and pd.searchName!=null">
+			and toy.order_number=#{pd.searchName}
+			</if>
+		ORDER BY
+			toy.create_order_time DESC
+	</select>
+	<!--  
+		后台获取机构订单列表
+	-->
+	<select id="getOrderOfJiGoulistPage" parameterType="page" resultType="pd">
+		SELECT
+			tus.userName ysuserName,
+			tus.phone ysPhone,
+			tuk.userName khuserName,
+			tuk.phone khPhone,
+			toy.create_order_time,
+			toy.order_number,
+			toy.fuwu_name,
+			toy.fuwu_introdaction,
+			toy.price,
+			toy.pay_method,
+			toy.pay_number,
+			toy.complete_time,
+			toy.order_state
+		FROM
+			tb_order_jigou toy
+		LEFT JOIN tb_user_shanghu tus ON tus.user_shanghu_id = toy.user_shanghu_fid
+		LEFT JOIN tb_user_kehu tuk ON tuk.user_kuhu_id = toy.user_kuhu_fid
+		WHERE
+			tus.identity = '2'
+			<if test="pd.searchName!='' and pd.searchName!=null">
+			and toy.order_number=#{pd.searchName}
+			</if>
+		ORDER BY
+			toy.create_order_time DESC
+	</select>
+	<!--  
+		后台获取药商订单列表
+	-->
+	<select id="getOrderOfYaoShanglistPage" parameterType="page" resultType="pd">
+		SELECT
+			tus.userName ysuserName,
+			tus.phone ysPhone,
+			tuk.userName khuserName,
+			tuk.phone khPhone,
+			toy.create_order_time,
+			toy.order_number,
+			toy.fuwu_name,
+			toy.fuwu_introdaction,
+			toy.price,
+			toy.pay_method,
+			toy.pay_number,
+			toy.complete_time,
+			toy.order_state
+		FROM
+			tb_order_yaoshang toy
+		LEFT JOIN tb_user_shanghu tus ON tus.user_shanghu_id = toy.user_shanghu_fid
+		LEFT JOIN tb_user_kehu tuk ON tuk.user_kuhu_id = toy.user_kuhu_fid
+		WHERE
+			tus.identity = '1'
+			<if test="pd.searchName!='' and pd.searchName!=null">
+			and toy.order_number=#{pd.searchName}
+			</if>
+		ORDER BY
+			toy.create_order_time DESC
+	</select>
+	<!--  
+		后台获取客户订单列表
+	-->
+	<select id="getOrderOfKeHulistPage" parameterType="page" resultType="pd">
+		SELECT
+			tus.userName shuserName,
+			tus.phone shPhone,
+			tus.identity,
+			tuk.userName khuserName,
+			tuk.phone khPhone,
+			toy.create_order_time,
+			toy.order_number,
+			toy.fuwu_jibing_name,
+			toy.jibing_introdaction,
+			toy.kehuPrice price,
+			toy.pay_method,
+			toy.pay_number,
+			toy.complete_time,
+			toy.order_state
+		FROM
+			tb_order_yisheng toy
+		LEFT JOIN tb_user_shanghu tus ON tus.user_shanghu_id = toy.user_shanghu_fid
+		LEFT JOIN tb_user_kehu tuk ON tuk.user_kuhu_id = toy.user_kuhu_fid
+		<where>
+			<if test="pd.searchName!='' and pd.searchName!=null">
+			toy.order_number=#{pd.searchName}
+			</if>
+		</where>
+		ORDER BY
+			toy.create_order_time DESC
+	</select>
+	
+	
+	
+	
+	
+	<!-- 医生类收益 -->
+	<select id="getShouYiOfYiShengSum" parameterType="pd" resultType="pd">
+		SELECT
+			ifnull(ROUND(SUM(pingtaiPrice),4),'0') sum
+		FROM tb_order_yisheng 
+		WHERE
+			order_state!='0'
+	</select>
+	<select id="getShouYiOfYiShenglistPage" parameterType="page" resultType="pd">
+		SELECT
+			order_number,
+			create_order_time,
+			kehuPrice,
+			fuwubili,
+			pingtaiPrice
+		FROM
+			tb_order_yisheng 
+		WHERE
+			order_state != '0'
+			<if test="pd.searchName!='' and pd.searchName!=null">
+			and order_number=#{pd.searchName}
+			</if>
+	</select>
+	<!-- 机构类收益 -->
+	<select id="getShouYiOfJiGouSum" parameterType="pd" resultType="pd">
+		SELECT
+			ifnull(ROUND(SUM(pingtaiPrice),4),'0') sum
+		FROM tb_order_jigou 
+		WHERE
+			order_state!='0'
+	</select>
+	<select id="getShouYiOfJiGoulistPage" parameterType="page" resultType="pd">
+		SELECT
+			order_number,
+			create_order_time,
+			kehuPrice,
+			fuwubili,
+			pingtaiPrice
+		FROM
+			tb_order_jigou 
+		WHERE
+			order_state != '0'
+			<if test="pd.searchName!='' and pd.searchName!=null">
+			and order_number=#{pd.searchName}
+			</if>
+	</select>
+	<!-- 药商类收益 -->
+	<select id="getShouYiOfYaoShangSum" parameterType="pd" resultType="pd">
+		SELECT
+			ifnull(ROUND(SUM(pingtaiPrice),4),'0') sum
+		FROM tb_order_yaoshang 
+		WHERE
+			order_state!='0'
+	</select>
+	<select id="getShouYiOfYaoShanglistPage" parameterType="page" resultType="pd">
+		SELECT
+			order_number,
+			create_order_time,
+			kehuPrice,
+			fuwubili,
+			pingtaiPrice
+		FROM
+			tb_order_yaoshang 
+		WHERE
+			order_state != '0'
+			<if test="pd.searchName!='' and pd.searchName!=null">
+			and order_number=#{pd.searchName}
+			</if>
+	</select>
+	
+	
+	
+	
+	
+	
+	
+</mapper>

@@ -1,0 +1,82 @@
+*{
+    margin:0;padding: 0;
+}
+
+.fubuBox{
+    width:100%;height:628px;background-color:#fff;
+}
+.fabu01{
+    width:1160px;height:628px;margin:0 auto;background-color: #fff;
+}
+.fabuTop{
+    width:100%;height:46px;line-height: 46px;color:#000;font-size: 12px;margin:0;
+}
+.fabuTop>span{
+    color:#38c4ff;
+}
+.fabuMain{
+    width:100%;height:580px;background-color: #f9f9f9;border:1px solid #c1c1c1;font-size: 14px;
+}
+.xuqiu{
+    width:1000px;height:130px;margin:15px auto 0 60px;position: relative;
+}
+.xuqiu>label{
+    position: absolute;top:20px;font-size: 16px;
+}
+.xuqiu>textarea{
+    width:898px;height:74px;resize: none;margin-left:100px;margin-top:10px;padding:10px;outline:none;
+    border-radius: 3px;
+}
+.xuqiu>p{
+    width:100%;color:#fd9f1b;text-align: right;
+}
+.tit{
+    width:1000px;height:40px;margin:15px auto 0 60px;position: relative;
+}
+.tit>label{
+    position: absolute;top:20px;font-size: 16px;
+}
+.tit>textarea{
+    width:520px;height:40px;resize: none;margin-left:100px;margin-top:10px;padding:10px;outline:none;
+    border-radius: 3px;
+}
+.tit>p{
+    color:#fd9f1b;position: absolute;top:20px;right:0;
+}
+.picUp{
+    width:1000px;height:124px;border-bottom:1px dashed #c1c1c1;margin-left:60px;color:#fd9f1b;position: relative;
+}
+.picUp>span:nth-child(1){
+    font-size: 16px;position: absolute;left:10px;top:20px;
+}
+.picUp>div{
+    width:480px;height:94px;position: absolute;left:100px;top:10px;
+}
+.picUp>span:nth-child(3){
+    font-size: 12px;position: absolute;left:580px;top:80px;
+}
+.xinxi01{
+    width:1000px;height:40px;line-height:40px;margin:30px auto auto 60px;font-size:16px;
+}
+.xinxi01>select{
+    width:110px;height:36px;margin-left:15px;/* padding-left:20px; */border:1px solid #c1c1c1;border-radius:3px;
+}
+.fabuMain>p{
+    width:1000px;height:40px;line-height: 40px;margin-left:60px;padding-left:20px;
+}
+.name+input{
+    margin-left:7px;width:300px;height:38px;border:1px solid #c1c1c1;
+}
+.tel{
+    margin-left:30px;
+}
+.tel+input{
+    margin-left:7px;width:300px;height:38px;border:1px solid #c1c1c1;
+}
+.fabuMain>p>a{
+    display: block;width:140px;height:40px;margin:0 auto;background-color: #38c4ff;border-radius:20px;color:#fff;
+    text-align: center;font-size: 16px;
+}
+.jigou,.yaoshang{
+    margin-left:10px;
+}

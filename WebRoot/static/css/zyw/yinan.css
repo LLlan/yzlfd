@@ -1,0 +1,80 @@
+*{
+    margin:0;padding:0;
+}
+a{
+    text-decoration: none;color:#000;
+}
+ul{
+    list-style: none;
+}
+.yinanBack{
+    width:100%;height:306px;
+}
+.yinanBox{
+    width:1160px;overflow: hidden;background-color:#fff;margin:0 auto;
+}
+.yinanTop{
+    width:100%;height:46px;line-height: 46px;color:#000;font-size: 12px;margin:0;
+}
+.yinanTop>span{
+    color:#38c4ff;
+}
+.yinanMain{
+    width:1060px;background-color: #fff;border:1px solid #e5e5e5;font-size: 14px;padding:0 50px;
+}
+.diqu00{
+    width:100%;height:30px;line-height: 30px;font-size: 14px;color: #000;margin-top:30px;
+}
+.diqu00>select{
+    width:92px;height:28px;line-height: 28px;border:1px solid #999;outline: none;margin-left:10px;border-radius: 4px;
+}
+.diqu00>a{
+    padding:4px 20px;color:#38c4ff;border-radius: 4px;margin-left:20px;border:1px solid #38c4ff;
+}
+.kelei00{
+    width:100%;line-height: 40px;font-size: 14px;color: #000;margin-top:10px;margin-bottom:20px;
+    overflow: hidden;
+}
+.ke00{
+    width:100%;
+}
+.ke00>span,.ke00>.right{
+    float:left;
+}
+.right{
+    width:860px;
+}
+.right>div{
+    width:100%;overflow: hidden;
+}
+.right>div>ul,.right>div>a{
+    float:left;
+}
+.keke00{
+    overflow: hidden;
+}
+.keke00>li{
+    float: left;margin:0 10px;
+}
+.right .zimu>li{
+    margin-left:0;
+}
+.keke00>li>a{
+    padding:5px 15px;border-bottom:1px solid #fff;
+}
+.right .zimu>li>a{
+    padding:5px;
+}
+.sub00{
+    overflow: hidden;
+}
+.sub00>li{
+    float:left;height:40px;
+}
+.sub00>li>a{
+    padding:5px 15px;border-bottom:1px solid #fff;
+}
+.buxian00{
+    display: block;width:70px;text-align: center;height:26px;line-height: 26px;border:1px solid #38c4ff;color:#38c4ff;
+    border-radius: 4px;margin-top:6px;float:left;margin-left:20px;
+}

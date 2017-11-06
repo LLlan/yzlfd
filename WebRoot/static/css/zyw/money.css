@@ -1,0 +1,87 @@
+*{
+    margin:0;padding:0;
+}
+a{
+    text-decoration: none;color:#000;
+}
+ul{
+    list-style: none;
+}
+.moneyBack{
+    width:100%;margin-top:50px;margin-bottom:90px;
+}
+.moneyBox{
+    width:1160px;background-color:#fff;margin:0 auto;
+}
+.moneyTop{
+    width:100%;height:46px;line-height: 46px;color:#000;font-size: 12px;margin:0;
+}
+.moneyTop>span{
+    color:#38c4ff;
+}
+.moneyMainA{
+    width:100%;background-color: #fff;margin-bottom:50px;overflow: hidden;margin-top:10px;
+}
+.left,.right{
+    float:left;
+}
+.left{
+    width:350px;
+}
+.left>h3{
+    width:100%;height:30px;line-height:30px;font-size:18px;color:#2b92bd;font-weight:400;
+}
+.left>div{
+    width:300px;height:139px;border:1px solid #e5e5e5;border-radius: 3px;margin-top:10px;
+    background:url(../../images/zyw/u132.png) no-repeat;background-size: cover;
+}
+.left>div>a{
+    display: block;width:156px;height:50px;line-height: 50px;text-align: center;border-radius: 25px;
+    margin:42px auto;background-color:rgba(255,255,255,0.8);font-size: 26px;color:#2b92bd;
+}
+.left>input{
+    width:260px;height:38px;border:1px solid #38c4ff;border-radius:5px;margin-top:10px;padding:0 20px;
+    background:url(../../images/zyw/search_03.png) 265px center no-repeat;outline: none;
+}
+.right{
+    width:774px;border-left:1px solid #e5e5e5;padding-left:35px;padding-bottom:30px;
+}
+.right>h3{
+    width:100%;height:30px;line-height:30px;font-size:18px;color:#000;font-weight:400;
+}
+.right>div:nth-child(2){
+    width:732px;height:710px;
+}
+.txt-center{
+    width:550px;margin:0 auto;
+}
+.right>div:nth-child(3){
+    width:732px;padding:20px;
+}
+.right>div:nth-child(2)>div{
+    width:732px;height:120px;padding:20px;border:1px solid #e5e5e5;margin-bottom:20px;
+}
+.right>div>div>img{
+    width:116px;height:116px;float:left;
+}
+.right>div>div>.imgRight{
+    width:596px;height:116px;float:left;margin-left:20px;
+}
+.imgRight>p:nth-child(1){
+    width:100%;height:30px;line-height: 30px;color:#000;font-size: 20px;
+}
+.imgRight>p:nth-child(1)>time{
+    float:right;font-size: 12px;color:#a0a0a0;
+}
+.imgRight>p:nth-child(2){
+    width:530px;height:54px;line-height:18px;color:#9a9a9a;font-size:12px;overflow: hidden;text-overflow: ellipsis;
+    display: -webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;margin-top:3px;
+}
+.imgRight>p:nth-child(3){
+    width:100%;height:30px;line-height: 30px;color:#9a9a9a;font-size: 20px;margin-top:3px;
+}
+.imgRight>p:nth-child(3)>a{
+    display: block;width:74px;height:30px;line-height: 30px;text-align: center;font-size: 16px;color:#999;
+    border:1px solid #e5e5e5;border-radius: 5px;float: right;
+}
+

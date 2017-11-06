@@ -1,0 +1,1956 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ljylShangHuMapper">
+	
+	<!--  
+		保存商户的信息
+	-->
+	<insert id="saveShangHu" parameterType="pd">
+		INSERT INTO tb_user_shanghu (
+			user_shanghu_id,
+			userName,
+			renZhengState,
+			phone,
+			loginPassword,
+			integral,
+			xunibi,
+			guquan,
+			identity,
+			registerTime,
+			last_login_time,
+			ip,
+			status,
+			bz,
+			top,
+			accid,
+			token
+		)
+		VALUES(
+			#{user_shanghu_id},
+			#{userName},
+			#{renZhengState},
+			#{phone},
+			#{loginPassword},
+			#{integral},
+			#{xunibi},
+			#{guquan},
+			#{identity},
+			#{registerTime},
+			#{last_login_time},
+			#{ip},
+			#{status},
+			#{bz},
+			#{top},
+			#{accid},
+			#{token}
+		)
+	</insert>
+	<!--  
+		更新二维码
+	-->
+	<update id="updateErWeiMa" parameterType="pd">
+		update tb_user_shanghu
+		set
+			erWeiMaImg=#{erWeiMaImg}
+		WHERE
+			user_shanghu_id = #{user_shanghu_id}
+	</update>
+	<!--  
+		提现成功后，更新现金金额(余额)
+	-->
+	<update id="updateXianJinAmount" parameterType="pd">
+		update tb_user_shanghu
+		set
+			xianjinAmount=#{xianjinAmount}
+		WHERE
+			user_shanghu_id = #{user_shanghu_id}
+	</update>
+	<!--  
+		每次登录成功后更新最新登录时间以及登录的IP地址
+	-->
+	<update id="updateIpAndTime" parameterType="pd">
+		UPDATE tb_user_shanghu tus
+		SET 
+			tus.last_login_time = #{last_login_time},
+			tus.ip = #{ip}
+		WHERE
+			tus.user_shanghu_id = #{user_shanghu_id}
+	</update>
+	<!--  
+		更新（保存）用户个人信息
+	-->
+	<update id="updatePersonInformation" parameterType="pd">
+		UPDATE tb_user_shanghu_info tus
+		SET 
+			tus.headImg = #{headImg},
+			tus.youName = #{youName},
+			tus.position = #{position},
+			tus.mark = #{mark},
+			tus.linkMethod = #{linkMethod},
+			tus.address = #{address},
+			tus.category = #{category},
+			<!-- tus.city = #{city}, -->
+			tus.dengji = #{dengji},
+			tus.keshiName = #{keshiName}
+		WHERE
+			tus.user_shanghu_fid = #{user_shanghu_id} and tus.identity=#{identity}
+	</update>
+	<!--  
+		更新（保存）用户个人简介或者擅长领域
+	-->
+	<update id="updatePersonIntroductOrGoodsField" parameterType="pd">
+		UPDATE tb_user_shanghu_info tus
+		SET 
+			<if test="introduct!='' and introduct!=null">
+				tus.introduct = #{introduct}
+			</if>
+			<if test="goodField!='' and goodField!=null">
+				tus.goodField = #{goodField}
+			</if>
+		WHERE
+			tus.user_shanghu_fid = #{user_shanghu_id} and tus.identity=#{identity}
+	</update>
+	<!--  
+		根据手机号或者用户名去查询用户信息
+	-->
+	<select id="getDataByNameOrPhone" parameterType="pd" resultType="pd">
+		SELECT 
+			tus.phone,
+			tus.userName
+			FROM tb_user_shanghu tus
+		<where>
+			tus.identity=#{identity}
+			<if test="userName!='' and userName!=null">
+				and tus.userName=#{userName}
+			</if>
+			<if test="phone!='' and phone!=null">
+				and tus.phone=#{phone}
+			</if>
+		</where>
+	</select>
+	<!--  
+		根据手机号修改登录密码
+	-->
+	<update id="updatePasswordByPhone" parameterType="pd">
+		UPDATE tb_user_shanghu tus
+		SET 
+			tus.loginPassword = #{loginPassword}
+		WHERE
+			tus.identity=#{identity} and 
+			tus.phone = #{phone}
+	</update>
+	<!--  
+		根据ID获取用户信息
+	-->
+	<select id="getDataById" parameterType="pd" resultType="pd">
+		SELECT 
+			tus.*
+			FROM tb_user_shanghu tus
+		WHERE
+			tus.user_shanghu_id = #{user_shanghu_id}
+	</select>
+	<!--  
+		根据商户的主键ID和身份获取对应的基本信息
+	-->
+	<select id="getDataByIdAndIdentity" parameterType="pd" resultType="pd">
+		SELECT
+			tus.user_shanghu_id,
+			tus.phone,
+			tus.integral,
+			tus.chengjiaoAmount,
+			tus.xianjinAmount,
+			tus.xunibi,
+			tus.guquan,
+			IFNULL(tus.payPassword,"")payPassword,
+			tusi.user_shanghu_fid,
+			tusi.user_shanghu_info_id,
+			IFNULL(tusi.address,"")address,
+			IFNULL(tusi.category,"")category,
+			IFNULL(tusi.dengji,"")dengji,
+			IFNULL(tusi.goodField,"")goodField,
+			IFNULL(tusi.headImg,"")headImg,
+			IFNULL(tusi.identity,"")identity,
+			IFNULL(tusi.introduct,"")introduct,
+			IFNULL(tusi.keshiName,"")keshiName,
+			IFNULL(tusi.linkMethod,"")linkMethod,
+			IFNULL(tusi.mark,"")mark,
+			IFNULL(tusi.position,"")position,
+			IFNULL(tusi.renZhengApplyTime,"")renZhengApplyTime,
+			IFNULL(tusi.renZhengBackTime,"")renZhengBackTime,
+			IFNULL(tusi.renZhengState,"")renZhengState,
+			IFNULL(tusi.top,"")top,
+			IFNULL(tusi.youName,"")youName
+		FROM
+			tb_user_shanghu tus
+		LEFT JOIN tb_user_shanghu_info tusi ON tusi.user_shanghu_fid = tus.user_shanghu_id
+		WHERE
+			tus.user_shanghu_id = #{user_shanghu_id} and tusi.identity=#{identity}
+	</select>
+	<!--  
+		根据登录名和密码获取对象信息
+	-->
+	<select id="getDataByNameAndPawAndIdentity" parameterType="pd" resultType="pd">
+		SELECT 
+			tus.*
+		FROM tb_user_shanghu tus
+		<where>
+			tus.identity=#{identity}
+			AND tus.loginPassword=#{loginPassword}
+			<if test="userName!='' and userName!=null">
+				AND tus.userName=#{userName}
+			</if>
+			<if test="phone!='' and phone!=null">
+				AND tus.phone=#{phone}
+			</if>
+		</where>
+	</select>
+	<!--  
+		更新股权和积分信息
+	-->
+	<update id="updateJiFenAndGuQuan" parameterType="pd">
+		UPDATE tb_user_shanghu tus
+		SET 
+			tus.integral = #{integral},
+			tus.guquan = #{guquan}
+		WHERE
+			tus.user_shanghu_id = #{user_shanghu_id}
+	</update>
+	
+	<!-- ////////////////////////案例展示/////////////////////////// -->
+	<!-- 
+		保存案例
+	 -->
+	<insert id="saveAnLiInformation" parameterType="pd">
+		INSERT INTO tb_anli_zhanshi (
+			anli_zhanshi_id,
+			title,
+			detailContent,
+			addTime,
+			imgPath,
+			user_shanghu_fid
+		)VALUES(
+			#{anli_zhanshi_id},
+			#{title},
+			#{detailContent},
+			#{addTime},
+			#{imgPath},
+			#{user_shanghu_fid}
+		)
+	</insert>
+	<!--  
+		获取案例列表
+	-->
+	<select id="getAnLiList" parameterType="pd" resultType="pd">
+		select 
+			*
+		from tb_anli_zhanshi
+		where
+			user_shanghu_fid=#{user_shanghu_fid}
+		order by addTime desc
+	</select>
+	<!--  
+		根据ID获取案例信息
+	-->
+	<select id="getAnLiDataById" parameterType="pd" resultType="pd">
+		select
+			*
+		from tb_anli_zhanshi
+		where
+			anli_zhanshi_id=#{anli_zhanshi_id}
+	</select>
+	<!--  
+		根据ID更新案例信息
+	-->
+	<update id="updateAnLiInformation" parameterType="pd">
+		update tb_anli_zhanshi
+		set
+			imgPath=#{imgPath},
+			title=#{title},
+			detailContent=#{detailContent},
+			addTime=#{addTime}
+		where
+			anli_zhanshi_id=#{anli_zhanshi_id}
+	</update>
+	<!--  
+		根据ID删除案例信息
+	-->
+	<delete id="deleteAnLiById" parameterType="pd">
+		delete 
+		from tb_anli_zhanshi 
+		where 
+			anli_zhanshi_id=#{anli_zhanshi_id}
+	</delete>
+	<!-- ////////////////////////服务/////////////////////////// -->
+	<!-- 
+		保存服务
+	 -->
+	<insert id="saveService" parameterType="pd">
+		INSERT INTO tb_fuwu (
+			fuwu_id,
+			fuwu_jibing_name,
+			jibing_introdaction,
+			price,
+			addTime,
+			type,
+			headImg,
+			user_shanghu_fid
+		)VALUES(
+			#{fuwu_id},
+			#{fuwu_jibing_name},
+			#{jibing_introdaction},
+			#{price},
+			#{addTime},
+			#{type},
+			#{headImg},
+			#{user_shanghu_fid}
+		)
+	</insert>
+	<!--  
+		获取服务列表
+	-->
+	<select id="getServiceList" parameterType="pd" resultType="pd">
+		SELECT
+			tus.headImg,
+			tus.youName,
+			tus.position,
+			tus.mark,
+			tbf.fuwu_jibing_name,
+			tbf.jibing_introdaction,
+			tbf.fuwu_id,
+			tbf.headImg fwheadImg,
+			tbf.price
+		FROM tb_fuwu tbf
+		LEFT JOIN tb_user_shanghu_info tus ON tus.user_shanghu_fid = tbf.user_shanghu_fid and tus.identity=tbf.type
+		WHERE 
+			tbf.user_shanghu_fid=#{user_shanghu_fid} and tus.identity=#{identity}
+		ORDER BY tbf.addTime desc
+	</select>
+	<!--  
+		根据ID获取对象信息
+	-->
+	<select id="getDataByIdOfService" parameterType="pd" resultType="pd">
+		SELECT
+			tbf.*
+		FROM tb_fuwu tbf
+		WHERE 
+			tbf.fuwu_id=#{fuwu_id}
+	</select>
+	<!--  
+		根据ID获取对象信息
+	-->
+	<select id="getDataByIdOfService1" parameterType="pd" resultType="pd">
+		SELECT
+			tbf.*,
+			tus.headImg,
+			tus.youName,
+			tus.position,
+			tus.identity,
+			tus.dengji,
+			tus.category,
+			tus.mark
+		FROM tb_fuwu tbf
+		LEFT JOIN tb_user_shanghu tus ON tus.user_shanghu_id=tbf.user_shanghu_fid
+		WHERE 
+			tbf.fuwu_id=#{fuwu_id}
+	</select>
+	<!--  
+		更新指定用户信息
+	-->
+	<update id="updateService" parameterType="pd">
+		UPDATE tb_fuwu
+		SET
+			jibing_introdaction=#{jibing_introdaction},
+			fuwu_jibing_name=#{fuwu_jibing_name},
+			price=#{price},
+			headImg=#{headImg},
+			addTime=#{addTime}
+		WHERE
+			fuwu_id=#{fuwu_id}
+	</update>
+	<!--  
+		删除服务根据ID
+	-->
+	<delete id="deleteService" parameterType="pd">
+		delete from tb_fuwu where fuwu_id=#{fuwu_id}
+	</delete>
+	<!-- ////////////////////////开店申请//////////////////////////////// -->
+	<!--  
+		添加申请图片
+	-->
+	<insert id="saveApplyImgPath" parameterType="pd">
+		INSERT INTO tb_imgath_apply(
+			imgpath_apply_id,
+			imgPath,
+			shenqingMethod,
+			user_shanghu_fid
+		)VALUES(
+			#{imgpath_apply_id},
+			#{imgPath},
+			#{shenqingMethod},
+			#{user_shanghu_fid}
+		)
+	</insert>
+	<!--  
+		改变开店申请状态和申请时间
+	-->
+	<update id="updateStateAndTime" parameterType="pd">
+		UPDATE tb_user_shanghu_info
+		SET
+			renZhengState=#{renZhengState},
+			renZhengApplyTime=#{renZhengApplyTime}
+		WHERE
+			user_shanghu_fid=#{user_shanghu_id} and identity=#{identity}
+	</update>
+	<!--  
+		根据用户ID获取开店申请资料
+	-->
+	<select id="getRenZhengInformation" parameterType="pd" resultType="pd">
+		SELECT
+			imgPath
+		FROM tb_imgath_apply
+		WHERE
+			user_shanghu_fid=#{user_shanghu_id}
+	</select>
+	
+	<!-- ////////////////////////成交金额中的成交记录//////////////////////////////// -->
+	<!--  
+		医生获取成交记录（订单）
+	-->
+	<select id="getChengJiaoJiLuList" parameterType="pd" resultType="pd">
+		SELECT
+			tus.headImg,
+			tus.youName,
+			tus.position,
+			tus.mark,
+			toy.fuwu_jibing_name,
+			ROUND(toy.price,2) price,
+			left(toy.complete_time,10) complete_time
+		FROM
+			tb_order_yisheng toy
+		LEFT JOIN tb_user_shanghu tus ON tus.user_shanghu_id = toy.user_shanghu_fid
+		WHERE
+			toy.order_state = "1"
+			<if test="searchTime!='' and searchTime!=null">
+			and toy.complete_time like CONCAT(CONCAT('%', #{searchTime}),'%')
+			</if>
+			AND toy.user_shanghu_fid = #{user_shanghu_fid}
+		order by toy.complete_time desc
+	</select>
+	<!--  
+		机构获取成交记录（订单）
+	-->
+	<select id="getChengJiaoJiLuList1" parameterType="pd" resultType="pd">
+		SELECT
+			tus.headImg,
+			tus.youName,
+			tus.dengji,
+			tus.mark,
+			toj.fuwu_name,
+			ROUND(toj.price,2) price,
+			left(toj.complete_time,10) complete_time
+		FROM
+			tb_order_jigou toj
+		LEFT JOIN tb_user_shanghu tus ON tus.user_shanghu_id = toj.user_shanghu_fid
+		WHERE
+			toj.order_state = "1"
+			<if test="searchTime!='' and searchTime!=null">
+			and toj.complete_time like CONCAT(CONCAT('%', #{searchTime}),'%')
+			</if>
+			AND toj.user_shanghu_fid = #{user_shanghu_fid}
+		order by toj.complete_time desc
+	</select>
+	<!--  
+		药商获取成交记录（订单）
+	-->
+	<select id="getChengJiaoJiLuList2" parameterType="pd" resultType="pd">
+		SELECT
+			tus.headImg,
+			tus.youName,
+			tus.category,
+			tus.mark,
+			toy.fuwu_name,
+			toy.type,
+			toy.totalPrice,
+			toy.kehuPrice,
+			ROUND(toy.price,2) price,
+			left(toy.complete_time,10) complete_time
+		FROM
+			tb_order_yaoshang toy
+		LEFT JOIN tb_user_shanghu tus ON tus.user_shanghu_id = toy.user_shanghu_fid
+		WHERE
+			toy.order_state = "1"
+			<if test="searchTime!='' and searchTime!=null">
+			and toy.complete_time like CONCAT(CONCAT('%', #{searchTime}),'%')
+			</if>
+			AND toy.user_shanghu_fid = #{user_shanghu_fid}
+		order by toy.complete_time desc
+	</select>
+<!-- //////////////////////////////////////////////////医生部分////网站后台功能///////////////////////////////////////////////////// -->
+	<!--1.医生列表  -->
+	<!--  
+		获取医生列表
+	-->	
+	<select id="getyishenglistPage" parameterType="page" resultType="pd">
+		SELECT 
+			tus.user_shanghu_id,
+			tus.userName,
+			tus.youName,
+			tus.phone,
+			tus.xianjinAmount,
+			tus.integral,
+			tus.registerTime,
+			tus.ip,
+			tus.last_login_time,
+			tus.bz,
+			tus.top,
+			tus.`status`,
+			tus.renZhengApplyTime,
+			tus.renZhengBackTime,
+			tus.renZhengState
+		FROM tb_user_shanghu tus
+		<where>
+			identity=#{pd.identity}
+			<if test="pd.searchName!=null and pd.searchName!=''">
+		 		and tus.phone LIKE CONCAT(CONCAT('%', #{pd.searchName}),'%')
+		 		or tus.userName LIKE CONCAT(CONCAT('%', #{pd.searchName}),'%')
+		 	</if>
+			<if test="pd.renZhengState!=null and pd.renZhengState!=''">
+		 		and tus.renZhengState=#{pd.renZhengState}
+		 	</if>
+		</where>
+		ORDER BY tus.top desc, tus.last_login_time DESC
+	</select>
+	<!--  
+		认证审核操作
+	-->
+	<update id="yishengChenked" parameterType="pd">
+		update tb_user_shanghu
+		set
+			renZhengBackTime=#{renZhengBackTime},
+			renZhengState=#{renZhengState}
+		where user_shanghu_id in
+		<foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+	<!--  
+		改变账号状态操作
+	-->
+	<update id="yishengStatus" parameterType="pd">
+		update tb_user_shanghu
+		set
+			status=#{status}
+		where user_shanghu_id=#{id}
+	</update>
+	<!--2.医生服务列表  -->
+	<!--  
+		获取医生服务列表（1-医生2-机构3-药商）
+	-->
+	<select id="getyishengfuwulistPage" parameterType="page" resultType="pd">
+		SELECT
+			tus.userName,
+			tus.phone,
+			tus.dengji,
+			tus.identity,
+			tus.category,
+			tbf.fuwu_id,
+			tus.youName,
+			tus.position,
+			tus.mark,
+			tbf.fuwu_jibing_name,
+			tbf.price,
+			tbf.addTime
+		FROM tb_fuwu tbf
+		LEFT JOIN tb_user_shanghu tus ON tus.user_shanghu_id=tbf.user_shanghu_fid
+		<where>
+			<if test="pd.searchName!=null and pd.searchName!=''">
+		 		tus.phone LIKE CONCAT(CONCAT('%', #{pd.searchName}),'%')
+		 		or tus.userName LIKE CONCAT(CONCAT('%', #{pd.searchName}),'%')
+		 	</if>
+		</where>
+		ORDER BY tbf.addTime desc
+	</select>
+	<update id="topShangHu" parameterType="pd">
+		update tb_user_shanghu
+		set
+			top=#{top}
+		where
+			user_shanghu_id=#{user_shanghu_id}
+	</update>
+<!-- //////////////////////////////////////////////////系统管理:联系我们////网站后台功能///////////////////////////////////////////////////// -->
+	<!--  
+		获取联系我们列表
+	-->	
+	<select id="contactuslistPage" parameterType="page" resultType="pd">
+		SELECT 
+			*
+		FROM sys_contactus 
+	</select>
+	<!--  
+		获取联系我们对象信息(肯定只有一条记录)
+	-->
+	<select id="getDataOfContactUs" parameterType="pd" resultType="pd">
+		SELECT 
+			*
+		FROM sys_contactus
+	</select>
+	<!--  
+		保存联系我们的信息
+	-->
+	<insert id="insertContactUs" parameterType="pd">
+		INSERT INTO sys_contactus (
+			contactus_id,
+			tel_phone,
+			koukou,
+			weixin,
+			weixinpublic,
+			email
+		)
+		VALUES(
+			#{contactus_id},
+			#{tel_phone},
+			#{koukou},
+			#{weixin},
+			#{weixinpublic},
+			#{email}
+		)
+	</insert>
+	<!--  
+		更新联系我们
+	-->
+	<update id="updateContactUs" parameterType="pd">
+		update sys_contactus
+		set
+			tel_phone=#{tel_phone},
+			koukou=#{koukou},
+			weixin=#{weixin},
+			weixinpublic=#{weixinpublic},
+			email=#{email}
+		where contactus_id=#{contactus_id}
+	</update>
+	<!--  
+		根据ID获取对象信息
+	-->
+	<select id="getContactUsById" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_contactus
+		WHERE 
+			contactus_id=#{contactus_id}
+	</select>
+	<!--  
+		根据ID删除指定对象信息
+	-->
+	<delete id="deleteContactUsById" parameterType="pd">
+		DELETE 
+		FROM sys_contactus
+		WHERE contactus_id in
+		<foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+<!-- //////////////////////////////////////////////////新闻公告////网站后台功能///////////////////////////////////////////////////// -->
+	<!--  
+		获取新闻公告列表
+	-->	
+	<select id="getnewsandnoticelistPage" parameterType="page" resultType="pd">
+		SELECT 
+			*
+		FROM sys_newsandnotice 
+		<where>
+			category=#{pd.category}
+			<if test="pd.tp!='' and pd.tp!=null">
+				and type=#{pd.tp}
+			</if>
+			<if test="pd.searchName!='' and pd.searchName!=null">
+				and title LIKE CONCAT(CONCAT('%', #{pd.searchName}),'%')
+			</if> 
+		</where>
+		ORDER BY top desc, addTime DESC
+	</select>
+	<!--  
+		保存新闻公告的信息
+	-->
+	<insert id="insertNewsAndNotice" parameterType="pd">
+		INSERT INTO sys_newsandnotice (
+			newsandnotice_id,
+			imgPth,
+			title,
+			content,
+			origin,
+			addTime,
+			top,
+			category
+		)
+		VALUES(
+			#{newsandnotice_id},
+			#{imgPth},
+			#{title},
+			#{content},
+			#{origin},
+			#{addTime},
+			#{top},
+			#{category}
+		)
+	</insert>
+	<!--  
+		更新新闻公告
+	-->
+	<update id="updateNewsAndNotice" parameterType="pd">
+		update sys_newsandnotice
+		set
+			imgPth=#{imgPth},
+			title=#{title},
+			content=#{content},
+			origin=#{origin},
+			addTime=#{addTime}
+		where newsandnotice_id=#{newsandnotice_id}
+	</update>
+	<!--  
+		根据ID获取对象信息
+	-->
+	<select id="getNewsAndNoticeById" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_newsandnotice
+		WHERE 
+			newsandnotice_id=#{newsandnotice_id}
+	</select>
+	<!--  
+		根据ID删除指定对象信息
+	-->
+	<delete id="deleteNewsAndNoticeById" parameterType="pd">
+		DELETE 
+		FROM sys_newsandnotice
+		WHERE newsandnotice_id in
+		<foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<!--  
+		置顶
+	-->
+	<update id="topNewsAndNotice" parameterType="pd">
+		update sys_newsandnotice
+		set
+			top=#{top},
+			addTime=#{addTime}
+		where newsandnotice_id=#{newsandnotice_id}
+	</update>
+	<!-- //////////////////////////////////////////////////常见疾病////网站后台功能///////////////////////////////////////////////////// -->
+	<!--  
+		获取常见疾病列表
+	-->	
+	<select id="getjibinglistPage" parameterType="page" resultType="pd">
+		SELECT 
+			*
+		FROM sys_yunyingbs 
+		<where>
+			<if test="pd.searchName!='' and pd.searchName!=null">
+				and jibing_name LIKE CONCAT(CONCAT('%', #{pd.searchName}),'%')
+			</if> 
+		</where>
+		ORDER BY addTime ASC
+	</select>
+	<!--  
+		根据首字母获取疾病列表
+	-->
+	<select id="getJiBingListByLetter" parameterType="pd" resultType="pd">
+		SELECT
+			scj.jibing_name
+		FROM sys_yunyingbs scj
+		WHERE
+			scj.pinyin LIKE CONCAT(#{letter}, '%')
+		ORDER BY scj.pinyin
+	</select>
+	<!--  
+		保存常见疾病的信息
+	-->
+	<insert id="insertJiBing" parameterType="pd">
+		INSERT INTO sys_yunyingbs (
+			changjianjibing_id,
+			jibing_name,
+			pinyin,
+			context,
+			addTime
+		)
+		VALUES(
+			#{changjianjibing_id},
+			#{jibing_name},
+			#{pinyin},
+			#{context},
+			#{addTime}
+		)
+	</insert>
+	<!--  
+		更新常见疾病
+	-->
+	<update id="updateJiBing" parameterType="pd">
+		update sys_yunyingbs
+		set
+			jibing_name=#{jibing_name},
+			pinyin=#{pinyin},
+			context=#{context},
+			addTime=#{addTime}
+		where changjianjibing_id=#{changjianjibing_id}
+	</update>
+	<!--  
+		根据ID获取对象信息
+	-->
+	<select id="getJiBingById" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_yunyingbs
+		WHERE 
+			changjianjibing_id=#{changjianjibing_id}
+	</select>
+	<!--  
+		根据疾病名称获取对象信息
+	-->
+	<select id="getJiBingByName" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_yunyingbs
+		WHERE 
+			jibing_name=#{jibing_name}
+	</select>
+	<!--  
+		根据ID删除指定对象信息
+	-->
+	<delete id="deleteJiBingById" parameterType="pd">
+		DELETE 
+		FROM sys_yunyingbs
+		WHERE changjianjibing_id in
+		<foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<!-- //////////////////////////////////////////////////科类名称////网站后台功能///////////////////////////////////////////////////// -->
+	<!--  
+		获取科类名称列表
+	-->	
+	<select id="keleilistPage" parameterType="page" resultType="pd">
+		SELECT 
+			*
+		FROM sys_kelei 
+		<where>
+			parent_id='0'
+			<if test="pd.searchName!='' and pd.searchName!=null">
+				and keleiName LIKE CONCAT(CONCAT('%', #{pd.searchName}),'%')
+			</if> 
+		</where>
+		ORDER BY addTime DESC
+	</select>
+	
+	<!--  
+		获取科室列表
+	-->	
+	<select id="getkeLeiList" parameterType="pd" resultType="pd">
+		SELECT 
+			*
+		FROM sys_kelei 
+		<where>
+			parent_id=#{parent_id}
+		</where>
+		ORDER BY addTime DESC
+	</select>
+	<!--  
+		保存科类名称的信息
+	-->
+	<insert id="insertKeLei" parameterType="pd">
+		INSERT INTO sys_kelei (
+			kelei_id,
+			keleiName,
+			addTime,
+			parent_id
+		)
+		VALUES(
+			#{kelei_id},
+			#{keleiName},
+			#{addTime},
+			#{parent_id}
+		)
+	</insert>
+	<!--  
+		更新科类名称
+	-->
+	<update id="updateKeLei" parameterType="pd">
+		update sys_kelei
+		set
+			keleiName=#{keleiName},
+			addTime=#{addTime},
+			parent_id=#{parent_id}
+		where kelei_id=#{kelei_id}
+	</update>
+	<!--  
+		根据ID获取对象信息
+	-->
+	<select id="getKeLeiById" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_kelei
+		WHERE 
+			kelei_id=#{kelei_id}
+	</select>
+	<!--  
+		根据科类名称和parent_id获取对象信息
+	-->
+	<select id="getKeLeiByNameAndParentid" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_kelei
+		WHERE 
+			keleiName=#{keleiName} and parent_id=#{parent_id}
+	</select>
+	<!--  
+		根据ID删除指定对象信息
+	-->
+	<delete id="deleteKeLeiById" parameterType="pd">
+		DELETE 
+		FROM sys_kelei
+		WHERE kelei_id=#{kelei_id}
+	</delete>
+	<!--  
+		根据parent_id删除指定对象信息
+	-->
+	<delete id="deleteKeLeiByParentid" parameterType="pd">
+		DELETE 
+		FROM sys_kelei
+		WHERE parent_id=#{parent_id}
+	</delete>
+<!-- //////////////////////////////////////////////////会员部分////网站后台功能///////////////////////////////////////////////////// -->
+	<!--1.会员列表  -->
+	<!--  
+		获取会员列表
+	-->	
+	<select id="gethuiyuanlistPage" parameterType="page" resultType="pd">
+		SELECT 
+			tuk.user_kuhu_id,
+			tuk.phone,
+			tuk.headImg_url,
+			tuk.userName,
+			tuk.realName,
+			tuk.identityCard,
+			tuk.birthday,
+			tuk.sex,
+			tuk.age,
+			tuk.address,
+			tuk.jifen,
+			tuk.registerTime,
+			tuk.last_login_time,
+			tuk.ip,
+			tuk.bz,
+			tuk.`status`
+		FROM
+			tb_user_kehu tuk
+		<where>
+			<if test="pd.searchName!=null and pd.searchName!=''">
+		 		tuk.phone LIKE CONCAT(CONCAT('%', #{pd.searchName}),'%')
+		 		or tuk.userName LIKE CONCAT(CONCAT('%', #{pd.searchName}),'%')
+		 	</if>
+		</where>
+		ORDER BY tuk.registerTime DESC
+	</select>
+	<!--  
+		改变账号状态操作
+	-->
+	<update id="huiyuanStatus" parameterType="pd">
+		update tb_user_kehu
+		set
+			status=#{status}
+		where user_kuhu_id=#{id}
+	</update>
+	<!--2.获取需求列表  -->
+	<!--  
+		获取需求列表
+	-->
+	<select id="getxuqiulistPage" parameterType="page" resultType="pd">
+		SELECT
+			*
+		FROM tb_xuqiu 
+		<where>
+			<if test="pd.searchName!=null and pd.searchName!=''">
+		 		phone LIKE CONCAT(CONCAT('%', #{pd.searchName}),'%')
+		 		or patient_name LIKE CONCAT(CONCAT('%', #{pd.searchName}),'%')
+		 		or type LIKE CONCAT(CONCAT('%', #{pd.searchName}),'%')
+		 	</if>
+		</where>
+		ORDER BY fabu_time DESC
+	</select>
+	<!--  
+		 获取需求列表(医生端获取需求)
+	-->
+	<select id="getxuqiuList" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM tb_xuqiu 
+		WHERE 1=1
+			<if test="searchName!='' and searchName!=null">
+				and disease LIKE CONCAT(CONCAT('%', #{searchName}),'%')
+			</if>
+		ORDER BY fabu_time DESC
+	</select>
+	<!--  
+		根据需求表的主键ID获取对应的需求图片
+	-->
+	<select id="getxuqiuimgList" parameterType="pd" resultType="pd">
+		SELECT
+			ifnull(img_url,null) img_url
+		FROM tb_xuqiu_img 
+		WHERE
+			xuqiu_fid=#{xuqiu_id}
+	</select>
+	<!-- //////////////////////////////////////////////////注册送积分////网站后台功能///////////////////////////////////////////////////// -->
+	<!--  
+		获取注册送积分列表
+	-->	
+	<select id="getjifenzhucelistPage" parameterType="page" resultType="pd">
+		SELECT 
+			*
+		FROM sys_jifen_zhuce 
+	</select>
+	<!--  
+		获取注册送积分对象信息(肯定只有一条记录)
+	-->
+	<select id="getDataOfJiFenZhuCe" parameterType="pd" resultType="pd">
+		SELECT 
+			*
+		FROM sys_jifen_zhuce
+	</select>
+	<!--  
+		保存注册送积分的信息
+	-->
+	<insert id="insertJiFenZhuCe" parameterType="pd">
+		INSERT INTO sys_jifen_zhuce (
+			jifen_zhuce_id,
+			jifen_zhuce_number
+		)
+		VALUES(
+			#{jifen_zhuce_id},
+			#{jifen_zhuce_number}
+		)
+	</insert>
+	<!--  
+		更新注册送积分
+	-->
+	<update id="updateJiFenZhuCe" parameterType="pd">
+		update sys_jifen_zhuce
+		set
+			jifen_zhuce_number=#{jifen_zhuce_number}
+		where jifen_zhuce_id=#{jifen_zhuce_id}
+	</update>
+	<!--  
+		根据ID获取对象信息
+	-->
+	<select id="getJiFenZhuCeById" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_jifen_zhuce
+		WHERE 
+			jifen_zhuce_id=#{jifen_zhuce_id}
+	</select>
+	<!--  
+		根据ID删除指定对象信息
+	-->
+	<delete id="deleteJiFenZhuCeById" parameterType="pd">
+		DELETE 
+		FROM sys_jifen_zhuce
+		WHERE jifen_zhuce_id=#{jifen_zhuce_id}
+	</delete>
+	<!-- //////////////////////////////////////////////////技术费用扣除比例////网站后台功能///////////////////////////////////////////////////// -->
+	<!--  
+		获取技术费用扣除比例列表
+	-->	
+	<select id="getjishufuwubililistPage" parameterType="page" resultType="pd">
+		SELECT 
+			*
+		FROM sys_bili_jishufuwu 
+	</select>
+	<!--  
+		获取技术费用扣除比例(肯定仅有一条记录)
+	-->	
+	<select id="getDataOfJiShuFuWuBiLi" parameterType="pd" resultType="pd">
+		SELECT 
+			*
+		FROM sys_bili_jishufuwu 
+	</select>
+	<!--  
+		保存技术费用扣除比例的信息
+	-->
+	<insert id="insertJiShuFuWuBiLi" parameterType="pd">
+		INSERT INTO sys_bili_jishufuwu (
+			bili_jishufuwu_id,
+			bili_jishufuwu
+		)
+		VALUES(
+			#{bili_jishufuwu_id},
+			#{bili_jishufuwu}
+		)
+	</insert>
+	<!--  
+		更新技术费用扣除比例
+	-->
+	<update id="updateJiShuFuWuBiLi" parameterType="pd">
+		update sys_bili_jishufuwu
+		set
+			bili_jishufuwu=#{bili_jishufuwu}
+		where bili_jishufuwu_id=#{bili_jishufuwu_id}
+	</update>
+	<!--  
+		根据ID获取对象信息
+	-->
+	<select id="getJiShuFuWuBiLiById" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_bili_jishufuwu
+		WHERE 
+			bili_jishufuwu_id=#{bili_jishufuwu_id}
+	</select>
+	<!--  
+		根据ID删除指定对象信息
+	-->
+	<delete id="deleteJiShuFuWuBiLiById" parameterType="pd">
+		DELETE 
+		FROM sys_bili_jishufuwu
+		WHERE bili_jishufuwu_id=#{bili_jishufuwu_id}
+	</delete>
+	<!-- //////////////////////////////////////////////////分销管理：积分设置////网站后台功能///////////////////////////////////////////////////// -->
+	<!--  
+		获取分销管理：积分设置列表
+	-->	
+	<select id="getjifenlistPage" parameterType="page" resultType="pd">
+		SELECT 
+			*
+		FROM sys_jifen 
+	</select>
+	<!--  
+		保存分销管理：积分设置的信息
+	-->
+	<insert id="insertJiFen" parameterType="pd">
+		INSERT INTO sys_jifen (
+			jifen_id,
+			fx1_num,
+			fx2_num
+		)
+		VALUES(
+			#{jifen_id},
+			#{fx1_num},
+			#{fx2_num}
+		)
+	</insert>
+	<!--  
+		更新分销管理：积分设置
+	-->
+	<update id="updateJiFen" parameterType="pd">
+		update sys_jifen
+		set
+			fx1_num=#{fx1_num},
+			fx2_num=#{fx2_num}
+		where jifen_id=#{jifen_id}
+	</update>
+	<!--  
+		根据ID获取对象信息
+	-->
+	<select id="getJiFenById" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_jifen
+		WHERE 
+			jifen_id=#{jifen_id}
+	</select>
+	<!--  
+		根据ID删除指定对象信息
+	-->
+	<delete id="deleteJiFenById" parameterType="pd">
+		DELETE 
+		FROM sys_jifen
+		WHERE jifen_id=#{jifen_id}
+	</delete>
+	<!-- //////////////////////////////////////////////////分销管理：提成设置////网站后台功能///////////////////////////////////////////////////// -->
+	<!--  
+		获取分销管理：提成设置列表
+	-->	
+	<select id="getfenxiaobililistPage" parameterType="page" resultType="pd">
+		SELECT 
+			*
+		FROM sys_bili_fenxiao 
+	</select>
+	<!--  
+		保存分销管理：提成设置的信息
+	-->
+	<insert id="insertFenXiaoBiLi" parameterType="pd">
+		INSERT INTO sys_bili_fenxiao (
+			bili_fenxiao_id,
+			bili_fenxiao1,
+			bili_fenxiao2
+		)
+		VALUES(
+			#{bili_fenxiao_id},
+			#{bili_fenxiao1},
+			#{bili_fenxiao2}
+		)
+	</insert>
+	<!--  
+		更新分销管理：提成设置
+	-->
+	<update id="updateFenXiaoBiLi" parameterType="pd">
+		update sys_bili_fenxiao
+		set
+			bili_fenxiao1=#{bili_fenxiao1},
+			bili_fenxiao2=#{bili_fenxiao2}
+		where bili_fenxiao_id=#{bili_fenxiao_id}
+	</update>
+	<!--  
+		根据ID获取对象信息
+	-->
+	<select id="getFenXiaoBiLiById" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_bili_fenxiao
+		WHERE 
+			bili_fenxiao_id=#{bili_fenxiao_id}
+	</select>
+	<!--  
+		根据ID删除指定对象信息
+	-->
+	<delete id="deleteFenXiaoBiLiById" parameterType="pd">
+		DELETE 
+		FROM sys_bili_fenxiao
+		WHERE bili_fenxiao_id=#{bili_fenxiao_id}
+	</delete>
+	<!-- //////////////////////////////////////////////////名著管理////网站后台功能///////////////////////////////////////////////////// -->
+	<!--  
+		获取名著列表
+	-->	
+	<select id="getmingzhulistPage" parameterType="page" resultType="pd">
+		SELECT 
+			*
+		FROM sys_mingzhu 
+		<where>
+			<if test="pd.searchName!='' and pd.searchName!=null">
+				and mingzhuName LIKE CONCAT(CONCAT('%', #{pd.searchName}),'%')
+			</if> 
+		</where>
+		ORDER BY addTime DESC
+	</select>
+	<!--  
+		保存名著的信息
+	-->
+	<insert id="insertMingZhu" parameterType="pd">
+		INSERT INTO sys_mingzhu (
+			mingzhu_id,
+			imgPath,
+			mingzhuName,
+			mingzhuLink,
+			addTime
+		)
+		VALUES(
+			#{mingzhu_id},
+			#{imgPath},
+			#{mingzhuName},
+			#{mingzhuLink},
+			#{addTime}
+		)
+	</insert>
+	<!--  
+		更新名著
+	-->
+	<update id="updateMingZhu" parameterType="pd">
+		update sys_mingzhu
+		set
+			imgPath=#{imgPath},
+			mingzhuName=#{mingzhuName},
+			mingzhuLink=#{mingzhuLink},
+			addTime=#{addTime}
+		where mingzhu_id=#{mingzhu_id}
+	</update>
+	<!--  
+		根据ID获取对象信息
+	-->
+	<select id="getMingZhuById" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_mingzhu
+		WHERE 
+			mingzhu_id=#{mingzhu_id}
+	</select>
+	<!--  
+		根据名著名称获取对象信息
+	-->
+	<select id="getMingZhuByName" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_mingzhu
+		WHERE 
+			mingzhu_id=#{mingzhu_id}
+	</select>
+	<!--  
+		根据ID删除指定对象信息
+	-->
+	<delete id="deleteMingZhuById" parameterType="pd">
+		DELETE 
+		FROM sys_mingzhu
+		WHERE mingzhu_id in
+		<foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<!--  
+		获取名著列表
+	-->
+	<select id="getMingzhuList" parameterType="pd" resultType="pd">
+		select * from sys_mingzhu
+	</select>
+	<!-- //////////////////////////////////////////////////注册送股权////网站后台功能///////////////////////////////////////////////////// -->
+	<!--  
+		获取注册送股权列表
+	-->	
+	<select id="getguquanlistPage" parameterType="page" resultType="pd">
+		SELECT 
+			*
+		FROM sys_guquan 
+	</select>
+	<!--  
+		获取注册送股权对象信息(肯定只有一条记录)
+	-->
+	<select id="getDataOfGuQuan" parameterType="pd" resultType="pd">
+		SELECT 
+			*
+		FROM sys_guquan
+	</select>
+	<!--  
+		保存注册送股权的信息
+	-->
+	<insert id="insertGuQuan" parameterType="pd">
+		INSERT INTO sys_guquan (
+			guquan_id,
+			guquan_number
+		)
+		VALUES(
+			#{guquan_id},
+			#{guquan_number}
+		)
+	</insert>
+	<!--  
+		更新注册送股权
+	-->
+	<update id="updateGuQuan" parameterType="pd">
+		update sys_guquan
+		set
+			guquan_number=#{guquan_number}
+		where guquan_id=#{guquan_id}
+	</update>
+	<!--  
+		根据ID获取对象信息
+	-->
+	<select id="getGuQuanById" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_guquan
+		WHERE 
+			guquan_id=#{guquan_id}
+	</select>
+	<!--  
+		根据ID删除指定对象信息
+	-->
+	<delete id="deleteGuQuanById" parameterType="pd">
+		DELETE 
+		FROM sys_guquan
+		WHERE guquan_id=#{guquan_id}
+	</delete>
+	<!-- //////////////////////////////////////////////////注册送虚拟币////网站后台功能///////////////////////////////////////////////////// -->
+	<!--  
+		获取注册送虚拟币列表
+	-->	
+	<select id="getxunibilistPage" parameterType="page" resultType="pd">
+		SELECT 
+			*
+		FROM sys_xunibi 
+	</select>
+	<!--  
+		获取注册送虚拟币对象信息(肯定只有一条记录)
+	-->
+	<select id="getDataOfXuNiBi" parameterType="pd" resultType="pd">
+		SELECT 
+			*
+		FROM sys_xunibi
+	</select>
+	<!--  
+		保存注册送虚拟币的信息
+	-->
+	<insert id="insertXuNiBi" parameterType="pd">
+		INSERT INTO sys_xunibi (
+			xunibi_id,
+			xunibi_number
+		)
+		VALUES(
+			#{xunibi_id},
+			#{xunibi_number}
+		)
+	</insert>
+	<!--  
+		更新注册送虚拟币
+	-->
+	<update id="updateXuNiBi" parameterType="pd">
+		update sys_xunibi
+		set
+			xunibi_number=#{xunibi_number}
+		where xunibi_id=#{xunibi_id}
+	</update>
+	<!--  
+		根据ID获取对象信息
+	-->
+	<select id="getXuNiBiById" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_xunibi
+		WHERE 
+			xunibi_id=#{xunibi_id}
+	</select>
+	<!--  
+		根据ID删除指定对象信息
+	-->
+	<delete id="deleteXuNiBiById" parameterType="pd">
+		DELETE 
+		FROM sys_xunibi
+		WHERE xunibi_id=#{xunibi_id}
+	</delete>
+	<!-- //////////////////////////////////////////////////提现部分（后台和商户端页面）///////////////////////////////////////////////////// -->
+	<!--  
+		创建提现申请记录
+	-->
+	<insert id="saveWithDrawCash" parameterType="pd">
+		INSERT INTO tb_withdraw_cash (
+			withdraw_cash_id,
+			serial_number,
+			amount,
+			shenqing_time,
+			balance_amount,
+			state,
+			tixian_method,
+			realName,
+			account,
+			user_fid,
+			type
+		)
+		VALUES(
+			#{withdraw_cash_id},
+			#{serial_number},
+			#{amount},
+			#{shenqing_time},
+			#{balance_amount},
+			#{state},
+			#{tixian_method},
+			#{realName},
+			#{account},
+			#{user_fid},
+			#{type}
+		)
+	</insert>
+	<!--  
+		根据用户的主键ID获取对应的提现申请记录
+	-->
+	<select id="getWithDrawCashList" parameterType="pd" resultType="pd">
+		SELECT
+			twc.withdraw_cash_id,
+			ROUND(twc.amount,2) amount,
+			twc.shenqing_time
+		FROM
+			tb_withdraw_cash twc
+		WHERE
+			twc.user_fid = #{user_fid}
+		ORDER BY twc.shenqing_time desc
+	</select>
+	<!--  
+		根据主键ID获取对象信息
+	-->
+	<select id="getWithDrawCashById" parameterType="pd" resultType="pd">
+		SELECT
+			twc.serial_number,
+			ROUND(twc.amount,2) amount,
+			twc.shenqing_time,
+			ROUND(twc.balance_amount,2) balance_amount
+		FROM
+			tb_withdraw_cash twc
+		WHERE
+			twc.withdraw_cash_id = #{withdraw_cash_id}
+	</select>
+	<!-- 后台功能:提现管理 -->
+	<!--  
+		获取商户提现申请列表
+	-->
+	<select id="getSHWithDrawCashlistPage" parameterType="page" resultType="pd">
+		SELECT
+			tus.userName,
+			tus.phone,
+			tus.identity,
+			twc.withdraw_cash_id,
+			twc.serial_number,
+			twc.amount,
+			twc.shenqing_time,
+			twc.tixian_method,
+			twc.account,
+			twc.realName,
+			twc.feedback_time,
+			twc.state,
+			twc.imgPath,
+			twc.caozuoName
+		FROM tb_withdraw_cash twc
+			LEFT JOIN tb_user_shanghu tus ON tus.user_shanghu_id=twc.user_fid
+		<where>
+			twc.type="2" and twc.state=#{pd.state}
+			<if test="pd.searchName!='' and pd.searchName!=null">
+				and twc.serial_number=#{pd.searchName}
+			</if>
+		</where>
+		ORDER BY twc.shenqing_time ASC
+	</select>
+	<!--  
+		获取客户提现申请列表
+	-->
+	<select id="getKHWithDrawCashlistPage" parameterType="page" resultType="pd">
+		SELECT
+			tuk.userName,
+			tuk.phone,
+			twc.withdraw_cash_id,
+			twc.serial_number,
+			twc.amount,
+			twc.shenqing_time,
+			twc.tixian_method,
+			twc.account,
+			twc.realName,
+			twc.feedback_time,
+			twc.state,
+			twc.imgPath,
+			twc.caozuoName
+		FROM tb_withdraw_cash twc
+			LEFT JOIN tb_user_kehu tuk ON tuk.user_kuhu_id=twc.user_fid
+		<where>
+			twc.type="1" and twc.state=#{pd.state}
+			<if test="pd.searchName!='' and pd.searchName!=null">
+				and twc.serial_number=#{pd.searchName}
+			</if>
+		</where>
+		ORDER BY twc.shenqing_time ASC
+	</select>
+	<!--  
+		改变状态
+	-->
+	<update id="updateWithDrawCashState" parameterType="pd">
+		UPDATE tb_withdraw_cash twc
+		SET 
+			twc.state = #{state},
+			twc.imgPath = #{imgPath},
+			twc.caozuoName = #{caozuoName},
+			twc.feedback_time = #{feedback_time}
+		WHERE
+			twc.withdraw_cash_id = #{withdraw_cash_id}
+	</update>
+	<!-- //////////////////////////////////////////////////机构类型////网站后台功能///////////////////////////////////////////////////// -->
+	<!--  
+		获取列表
+	-->	
+	<select id="getjigoulistPage" parameterType="page" resultType="pd">
+		SELECT 
+			*
+		FROM sys_jigou_type 
+		<where>
+			<if test="pd.searchName!='' and pd.searchName!=null">
+				and typeName LIKE CONCAT(CONCAT('%', #{pd.searchName}),'%')
+			</if> 
+		</where>
+		ORDER BY addTime DESC
+	</select>
+	<!--  
+		获取所有
+	-->	
+	<select id="getJiGouTypeList" parameterType="pd" resultType="pd">
+		SELECT 
+			*
+		FROM sys_jigou_type 
+	</select>
+	<!--  
+		保存信息
+	-->
+	<insert id="insertJiGouType" parameterType="pd">
+		INSERT INTO sys_jigou_type (
+			jigou_type_id,
+			typeName,
+			addTime
+		)
+		VALUES(
+			#{jigou_type_id},
+			#{typeName},
+			#{addTime}
+		)
+	</insert>
+	<!--  
+		更新
+	-->
+	<update id="updateJiGouType" parameterType="pd">
+		update sys_jigou_type
+		set
+			typeName=#{typeName},
+			addTime=#{addTime}
+		where jigou_type_id=#{jigou_type_id}
+	</update>
+	<!--  
+		根据ID获取对象信息
+	-->
+	<select id="getJiGouTypeById" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_jigou_type
+		WHERE 
+			jigou_type_id=#{jigou_type_id}
+	</select>
+	<!--  
+		根据名称获取对象信息
+	-->
+	<select id="getJiGouTypeByName" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_jigou_type
+		WHERE 
+			typeName=#{typeName}
+	</select>
+	<!--  
+		根据ID删除指定对象信息
+	-->
+	<delete id="deleteJiGouTypeById" parameterType="pd">
+		DELETE 
+		FROM sys_jigou_type
+		WHERE jigou_type_id in
+		<foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<!-- //////////////////////////////////////////////////积分兑换股权////网站后台功能///////////////////////////////////////////////////// -->
+	<!--  
+		获取列表
+	-->	
+	<select id="getjifenhuanguquanlistPage" parameterType="page" resultType="pd">
+		SELECT 
+			*
+		FROM sys_jifen_guquan 
+	</select>
+	<!--  
+		获取对象信息(肯定只有一条记录)
+	-->
+	<select id="getDataOfJiFenHuanGuQuan" parameterType="pd" resultType="pd">
+		SELECT 
+			*
+		FROM sys_jifen_guquan
+	</select>
+	<!--  
+		保存信息
+	-->
+	<insert id="insertJiFenHuanGuQuan" parameterType="pd">
+		INSERT INTO sys_jifen_guquan (
+			jifen_guquan_id,
+			guquan_num,
+			jifen_num
+		)
+		VALUES(
+			#{jifen_guquan_id},
+			#{guquan_num},
+			#{jifen_num}
+		)
+	</insert>
+	<!--  
+		更新
+	-->
+	<update id="updateJiFenHuanGuQuan" parameterType="pd">
+		update sys_jifen_guquan
+		set
+			guquan_num=#{guquan_num},
+			jifen_num=#{jifen_num}
+		where jifen_guquan_id=#{jifen_guquan_id}
+	</update>
+	<!--  
+		根据ID获取对象信息
+	-->
+	<select id="getJiFenHuanGuQuanById" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_jifen_guquan
+		WHERE 
+			jifen_guquan_id=#{jifen_guquan_id}
+	</select>
+	<!--  
+		根据ID删除指定对象信息
+	-->
+	<delete id="deleteJiFenHuanGuQuanById" parameterType="pd">
+		DELETE 
+		FROM sys_jifen_guquan
+		WHERE jifen_guquan_id=#{jifen_guquan_id}
+	</delete>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- //////////////////////////////////////////////////分销注册///////////////////////////////////////////////////// -->
+	<select id="getShangHuJifen" parameterType="pd" resultType="pd">
+			select tus.integral jifen from tb_user_shanghu tus where tus.user_shanghu_id = #{user_shanghu_id}
+	</select>
+	
+	
+		<!-- 修改积分 通过二维码注册 他的上级得积分 -->
+	<update id="updateJifenToShanghu" parameterType="pd">
+			update tb_user_shanghu tuk
+			set tuk.integral = #{jifen}
+			where user_shanghu_id  = #{tjr_user_id}
+	</update>
+	
+	<!-- //////////////////////////////////////////////////退单部分///////////////////////////////////////////////////// -->
+	<!--  
+		未处理
+	-->
+	<select id="tuidanw1listPage" parameterType="pd" resultType="pd">
+			SELECT
+				toy.kehuPrice,
+				toy.order_yisheng_id,
+				toy.order_number,
+				toy.pay_method,
+				toy.pay_number,
+				toy.complete_time,
+				toy.order_state,
+				tus.identity
+			FROM
+				tb_order_yisheng toy
+			LEFT JOIN tb_user_shanghu tus ON tus.user_shanghu_id=toy.user_shanghu_fid
+			WHERE
+				toy.order_state=#{pd.order_state}
+				ORDER BY complete_time DESC
+	</select>
+	<select id="tuidanw2listPage" parameterType="pd" resultType="pd">
+			SELECT
+				toy.kehuPrice,
+				toy.order_jigou_id,
+				toy.order_number,
+				toy.pay_method,
+				toy.pay_number,
+				toy.complete_time,
+				toy.order_state,
+				tus.identity
+			FROM
+				tb_order_jigou toy
+			LEFT JOIN tb_user_shanghu tus ON tus.user_shanghu_id=toy.user_shanghu_fid
+			WHERE
+				toy.order_state=#{pd.order_state}
+			ORDER BY complete_time DESC
+	</select>
+	<select id="tuidanw3listPage" parameterType="pd" resultType="pd">
+			SELECT
+				toy.kehuPrice,
+				toy.order_yaoshang_id,
+				toy.order_number,
+				toy.pay_method,
+				toy.pay_number,
+				toy.complete_time,
+				toy.order_state,
+				tus.identity
+			FROM
+				tb_order_yaoshang toy
+			LEFT JOIN tb_user_shanghu tus ON tus.user_shanghu_id=toy.user_shanghu_fid
+			WHERE
+				toy.order_state=#{pd.order_state}	
+				ORDER BY complete_time DESC
+	</select>
+
+
+
+	<update id="updateTuiDan1" parameterType="pd">
+			UPDATE tb_order_yisheng
+			SET 
+				order_state=#{order_state},
+				complete_time=#{complete_time}
+			WHERE
+				order_yisheng_id=#{id}
+	</update>
+	<update id="updateTuiDan2" parameterType="pd">
+			UPDATE tb_order_jigou
+			SET 
+				order_state=#{order_state},
+				complete_time=#{complete_time}
+			WHERE
+				order_jigou_id=#{id}
+	</update>
+	<update id="updateTuiDan3" parameterType="pd">
+			UPDATE tb_order_yaoshang
+			SET 
+				order_state=#{order_state},
+				complete_time=#{complete_time}
+			WHERE
+				order_yaoshang_id=#{id}
+	</update>
+	<!-- //////////////////////////////////////////////////存款利率设置////网站后台功能///////////////////////////////////////////////////// -->
+	<!--  
+		获取列表
+	-->	
+	<select id="cunkuanlilvlistPage" parameterType="page" resultType="pd">
+		SELECT 
+			*
+		FROM sys_cunkuan_lilv 
+	</select>
+	<!--  
+		获取对象信息(肯定只有一条记录)
+	-->
+	<select id="getDataOfCunKuanLiLv" parameterType="pd" resultType="pd">
+		SELECT 
+			*
+		FROM sys_cunkuan_lilv
+	</select>
+	<!--  
+		保存信息
+	-->
+	<insert id="insertCunKuanLiLv" parameterType="pd">
+		INSERT INTO sys_cunkuan_lilv (
+			cunkuan_lilv_id,
+			cunkuan_lilv3,
+			cunkuan_lilv6,
+			cunkuan_lilv12
+		)
+		VALUES(
+			#{cunkuan_lilv_id},
+			#{cunkuan_lilv3},
+			#{cunkuan_lilv6},
+			#{cunkuan_lilv12}
+		)
+	</insert>
+	<!--  
+		更新
+	-->
+	<update id="updateCunKuanLiLv" parameterType="pd">
+		update sys_cunkuan_lilv
+		set
+			cunkuan_lilv3=#{cunkuan_lilv3},
+			cunkuan_lilv6=#{cunkuan_lilv6},
+			cunkuan_lilv12=#{cunkuan_lilv12}
+		where cunkuan_lilv_id=#{cunkuan_lilv_id}
+	</update>
+	<!--  
+		根据ID获取对象信息
+	-->
+	<select id="getCunKuanLiLvById" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_cunkuan_lilv
+		WHERE 
+			cunkuan_lilv_id=#{cunkuan_lilv_id}
+	</select>
+	<!--  
+		根据ID删除指定对象信息
+	-->
+	<delete id="deleteCunKuanLiLvById" parameterType="pd">
+		DELETE 
+		FROM sys_cunkuan_lilv
+		WHERE cunkuan_lilv_id in
+		<foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<!-- //////////////////////////////////////////////////存款部分///////////////////////////////////////////////////////// -->
+	<!--  
+		改变到期存款记录的状态
+	-->
+	<update id="updateCunKuanState" parameterType="pd">
+		UPDATE tb_cunkuan
+		SET
+			state='1'
+		WHERE
+			end_time &lt; #{now_time} 
+			AND user_id=#{user_id}
+	</update>
+	<!--  
+		根据ID改变存款记录的状态
+	-->
+	<update id="updateCunKuanState1" parameterType="pd">
+		UPDATE tb_cunkuan
+		SET
+			state='0'
+		WHERE
+			cunkuan_id=#{cunkuan_id}
+	</update>
+	<!--  
+		保存存款记录信息
+	-->
+	<insert id="insertCunKuan" parameterType="pd">
+		INSERT INTO tb_cunkuan (
+			cunkuan_id,
+			user_id,
+			user_type,
+			cunkuan_type,
+			begin_amount,
+			rate,
+			end_amount,
+			begin_time,
+			end_time,
+			state
+		)
+		VALUES (
+			#{cunkuan_id},
+			#{user_id},
+			#{user_type},
+			#{cunkuan_type},
+			#{begin_amount},
+			#{rate},
+			#{end_amount},
+			#{begin_time},
+			#{end_time},
+			#{state}
+		)
+	</insert>
+	<!--  
+		获取存款信息记录列表
+	-->	
+	<select id="getCunKuanList" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM tb_cunkuan
+		WHERE
+			user_id=#{user_id}
+			<!-- <if test="state=='' or state==null">
+				AND state!='0'
+			</if>
+			<if test="state!='' and state!=null">
+				AND state='0'
+			</if> -->
+		ORDER BY begin_time DESC
+	</select>
+	<!--  
+		根据ID获取存款信息
+	-->	
+	<select id="getCunKuanOfId" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM tb_cunkuan
+		WHERE
+			cunkuan_id=#{cunkuan_id}
+	</select>
+	<!--  
+		改变客户余额
+	-->
+	<update id="updateKeHuYuE" parameterType="pd">
+		UPDATE tb_user_kehu
+		SET
+			money=#{money}
+		WHERE
+			user_kuhu_id=#{user_kuhu_id}
+	</update>
+	
+</mapper>

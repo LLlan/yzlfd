@@ -1,0 +1,56 @@
+*{
+    margin:0;padding:0;
+}
+a{
+    text-decoration: none;color:#000;
+}
+ul{
+    list-style: none;
+}
+.zhaoyaoshangBack{
+    width:100%;overflow: hidden;border-top: 1px solid #38c4ff;
+}
+.zhaoyaoshangBox{
+    width:1160px;overflow: hidden;background-color:#fff;margin:0 auto;
+}
+.zhaoyaoshangTop{
+    width:100%;height:46px;line-height: 46px;color:#000;font-size: 12px;margin:0;
+}
+.zhaoyaoshangTop>span{
+    color:#38c4ff;
+}
+.zhaoyaoshangMain{
+    width:1160px;background-color: #fff;border:1px solid #e5e5e5;font-size: 14px;padding:0 50px;
+}
+.zhaoyaoshang00{
+     width:100%;height:40px;line-height: 40px;font-size: 15px;color: #000;margin-top:30px;
+ }
+.zhaoyaoshang00>select{
+    width:92px;height:28px;line-height: 28px;border:1px solid #999;outline: none;margin-left:10px;border-radius: 4px;
+}
+.zhaoyaoshang00>a{
+    padding:4px 20px;color:#38c4ff;border-radius: 4px;margin-left:20px;border:1px solid #38c4ff;
+}
+.pinpai00{
+    width:100%;line-height:40px;font-size: 14px;color: #000;margin-top:10px;
+    overflow: hidden;margin-bottom:20px;
+}
+.pin00{
+    width:100%;
+}
+.pin00>span{
+    float:left;
+}
+.pin00>ul.pinpin00{
+    width:700px;line-height:40px;float:left;overflow: hidden;
+}
+.pin00>ul>li{
+    float:left;margin:0 10px;
+}
+.pin00>ul>li>a{
+    padding:5px 15px;border-bottom:1px solid #fff;
+}
+.pin00>a:nth-child(3){
+    display: block;width:70px;text-align: center;height:26px;line-height: 26px;border:1px solid #38c4ff;color:#38c4ff;
+    border-radius: 4px;margin-top:6px;float:left
+}

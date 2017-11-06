@@ -1,0 +1,191 @@
+* {
+  margin: 0;  padding: 0;  font-family: "Helvetica Neue", "Microsoft Yahei", sans-serif;  font-size: 12px;  color: #000;
+}
+a {
+  text-decoration: none;  color: #7f7f7f;
+}
+ul {
+  list-style: none;
+}
+header{
+  width: 100%;  height:30px;  background-color: #f9f9f9;
+}
+.header {
+  width: 1160px;  height: 30px;  line-height: 30px;  margin: 0 auto;
+}
+.header>p {
+  float: left;
+}
+.header>ul {
+  float: right;  margin-right: 10px;
+}
+.header>ul>li {
+  float: left;color: #7f7f7f;
+}
+.header>ul>li>a {
+  padding: 0 10px;
+}
+.header>ul>li span {
+  padding: 0 5px;  font-size: 10px;
+}
+
+
+.vipbg {
+  background: url(../../images/zyw/arrow_01.png) right no-repeat; background-size: 14px 14px;
+}
+.vipCenter{
+  position: relative;
+}
+.subVip{
+  width:94px;border:1px solid #e5e5e5;position: absolute;z-index: 100;background-color: #fff;left:-7px;top:29px;display: none;
+}
+.subVip a{
+  display: block;width:100%;height:30px;font-size: 12px;text-align: center;
+}
+
+
+.logo{
+  width:100%;
+}
+.logoBox {
+  width: 1160px;  height: 60px;  line-height: 60px;  margin: 0 auto;  padding-top: 20px;  position: relative;
+}
+.logoBox>img {
+  width: 180px;  height: 60px;
+}
+.address{
+  display:block;width:100px;  height: 41px;  line-height: 40px;  font-size: 16px;  position: absolute;
+  top: 25px;  left: 240px;  background:#fff url(../../images/zyw/arrow_01.png) 70px center no-repeat;
+  background-size: 16px 14px;  padding-right: 20px;color:#000;z-index: 100;
+}
+.address>span {
+  font-size: 14px;  padding-right: 20px;
+}
+.addressBox {
+  width: 430px;height: 145px;  background-color:#fff;  border: 1px solid #c1c1c1;  position: absolute;
+  top:65px;left:240px;z-index:99; font-size: 12px;color:#000;display: none;
+}
+.city{
+  position: relative;
+}
+.city>ul{
+  width:400px;margin:0 auto;height:30px;line-height: 30px;border-bottom:1px solid #c1c1c1;
+}
+.city>ul>li{
+  float:left;margin-right:13px;
+}
+.city>ul>li>a{
+  padding:6px 5px;color:#000;
+}
+.city01{
+  height:100px;position: absolute;top:30px;
+}
+.city01>p{
+  width:390px;height:100px;margin-left:10px;position: absolute;top:0;left:0;
+}
+
+.city01>p>a{
+  display:block;float:left;width:65px;height:40px;line-height: 40px;text-align: center;color:#000;
+}
+.addressBox > p {
+  padding-left: 10px;  color: #666;height:50px;
+}
+.addressBox > p > span {
+  background-color: #38c4ff;  border-radius: 5px;  padding: 3px 10px;  color: #fff;  margin-left: 10px;
+}
+.searchBox {
+  width: 550px;  height: 40px;  line-height: 40px;  position: absolute;  left: 370px;  top: 20px; border: 2px solid #38c4ff;  border-radius: 8px;
+}
+.searchBox select{
+	float:left;
+	width:70px;
+	height:36px;
+	outline:none;
+	border:0;
+	margin-left: 5px;
+}
+.searchBox input.input1 {
+  width: 391px;  height: 36px;  /* border: 2px solid #38c4ff;  border-top-left-radius: 8px;  border-bottom-left-radius: 8px; */
+  padding-left: 10px;  outline: none;  font-size: 14px;border:none;float:left;
+}
+.searchBox input.input2{
+  width: 80px;  height: 44px;  background-color: #38c4ff;  color: #fff; 
+    outline: none;  border: none;  font-size: 14px;float:right;
+        margin-top: -4px;
+    border-bottom-right-radius: 8px;
+    border-top-right-radius: 8px;
+}
+.fabu {
+  width: 120px;  height: 40px;  line-height: 40px;  background: #38c4ff url(../../images/zyw/fabu01.png) no-repeat 90px 6px;
+  position: absolute;  top: 20px;  right: 0;  padding-left: 20px;  color: #fff;  border-radius: 8px;  font-size: 14px;
+}
+
+footer {
+  width: 100%;  /* height: 180px; */  border-top: 1px solid #38c4ff;  margin-top: 50px;
+}
+.footer1Box {
+  width: 100%;  height: 150px;  background-color: #fcfcfc;
+}
+.footer1 {
+  width: 1160px;  height: 150px;  margin: 0 auto;
+}
+.footer1>div {
+  float: left;margin-top: 28px;
+}
+.footer1>div>ul {
+  padding-top: 22px;  overflow: hidden;
+}
+.footer1>div>ul>li {
+  float: left;  margin-left: 25px;  font-size: 12px;  height: 30px;  line-height: 20px;
+}
+.footer1>div>ul>li:nth-child(1) {
+  margin-left: 0;
+}
+.footer1>div>ul>li:nth-child(1) a {
+  color: #000;  font-size: 14px;
+}
+.footer1>div>ul:nth-child(2) li > a {
+  display: block;  height: 23px;  line-height: 23px;  padding-left: 28px;
+}
+.footer1>div>ul:nth-child(2) li:nth-child(2) > a {
+  background: url(../../images/zyw/footer-icon_03.png) no-repeat;  background-size: 23px 23px;
+}
+.footer1>div>ul:nth-child(2) li:nth-child(3) > a {
+  background: url(../../images/zyw/footer-icon_05.png) no-repeat;  background-size: 23px 23px;
+}
+.footer1>div>ul:nth-child(2) li:nth-child(4) > a {
+  background: url(../../images/zyw/footer-icon_07.png) no-repeat;  background-size: 23px 23px;
+}
+.footer1>div>ul:nth-child(2) li:nth-child(5) > a {
+  background: url(../../images/zyw/footer-icon_09.png) no-repeat;  background-size: 23px 23px;
+}
+.footer1>div>ul:nth-child(2) li:nth-child(6) > a {
+  background: url(../../images/zyw/footer-icon_11.png) no-repeat;  background-size: 23px 23px;
+}
+.clean {
+  display: block;  max-width: 20%;  height: 150px;  text-align: center;  float: right; margin-top:30px; 
+   color: #000;
+}
+.clean>img {
+  width: 92px;  height: 92px;
+}
+
+.footer2Box {
+  width: 100%;  height: 30px;  background-color: #f5f5f5;
+}
+.footer2 {
+  width: 1160px;  margin: 0 auto;  height: 30px;  line-height: 30px;  text-align: center;  color: #5a5a5a;
+}
+
+
+
+.txt-center {
+    display: flex;
+    display: -webkit-box;
+    display: -webkit-flex;
+        justify-content: center;
+    width: 500px;
+    max-width: 500px;
+    height: 50px;
+    margin: 10px auto;
+}

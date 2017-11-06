@@ -1,0 +1,241 @@
+.yisheng{
+  width: 1160px;
+  margin:0 auto;
+
+  /*position: absolute;*/
+  /*z-index: 100;*/
+  /*width: 1160px;*/
+  /*top: 80px;*/
+  /*left: 50%;*/
+  /*margin-left: -580px;*/
+}
+.yisheng .location{
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  color: #333;
+ /*  border-top: 1px solid #38C4FF; */
+}
+.yisheng .location span{
+  color: #333;
+}
+.ys_conter{
+  width: 100%;
+  overflow: hidden;
+  padding: 20px 20px 15px 30px;
+  border: 1px solid #E6E6E6;
+}
+.ys_lf p .xuwei,.ys_lf p  .xuwei{
+  color: #38C4FF;
+}
+.yisheng .location span.xuwei{
+  color: #38C4FF;
+}
+.ys_lf,.ys_rt{
+  float: left;
+  width: 50%;
+  overflow: hidden;
+}
+.ys_lf .ys_img,.ys_lf .ys_img img{
+  float: left;
+  width: 100px;
+  height: 120px;
+}
+.ys_lf p{
+  margin-left: 120px;
+  margin-bottom: 10px;
+  color: #333;
+}
+.ys_lf p span{
+  color: #333;
+}
+.ys_rt p{
+  margin-bottom: 20px;
+  color: #333;
+}
+.ys_rt p span{
+  color: #333;
+}
+.ys_rt p:last-child{
+  margin-bottom: 0;
+  text-align: right;
+  color: #333;
+}
+.btn4{
+  text-align: right;
+  padding: 5px 15px;
+  color:#fff;
+  font-size: 15px;
+  border: 1px solid #3EC6FF;
+  border-radius: 5px;
+  background-color: #3EC6FF;
+}
+/*�������*/
+.detail_info{
+  width: 1160px;
+  overflow: hidden;
+  margin:10px auto 0 auto;
+}
+.expert{
+  width: 100%;
+  overflow: hidden;
+}
+.expert .expert_top{
+  width: 100%;
+  height: 40px;
+
+  color: #fff;
+  padding: 5px 0 5px 20px;
+  background-color: #3EC6FF;
+}
+.expert .expert_top i{
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background: url("../../images/zyw/person.png") no-repeat;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+.expert .expert_bottom{
+  border: 1px solid #E6E6E6;
+  padding: 10px 10px 20px 30px;
+  margin-bottom: 10px;
+}
+.expert .expert_bottom p{
+  text-indent: 2em;
+  color: #333;
+}
+.service{
+  width: 100%;
+  overflow: hidden;
+}
+.service_top{
+  width: 100%;
+  height: 40px;
+  color: #fff;
+  padding: 5px 0 5px 20px;
+  background-color: #3EC6FF;
+}
+.service_top i{
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background: url("../../images/zyw/item.png") no-repeat;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+.service_top span,.service_top b{
+  color: #fff;
+}
+.expert_bottom,.expert_bottom ul{
+  width: 100%;
+  overflow: hidden;
+  margin-top: 10px;
+}
+.expert_bottom ul li .xiadan{
+  float: left;
+  width: 8%;
+  height: 40px;
+  line-height: 40px;
+  color: #8E8E8E;
+}
+.expert_bottom ul li{
+  width: 100%;
+  overflow: hidden;
+  clear: both;
+  margin-bottom: 15px;
+}
+.expert_bottom ul li .item_info{
+  float: left;
+  width: 83%;
+  margin-right: 1%;
+  padding: 0 15px;
+  height: 40px;
+  line-height: 40px;
+  border: 1px solid #ddd;
+}
+.expert_bottom ul li .item_info p:first-child{
+  float: left;
+  color: #38C4FF;
+  width: 90%;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.expert_bottom ul li .item_info p:last-child{
+  float: left;
+  width: 10%;
+  color: #FEB75D;
+}
+.expert_bottom ul li .item_info p:last-child span{
+  color: #FEB75D;
+}
+.expert_bottom ul li .m_order{
+  display: block;
+  margin-top: 4px;
+  text-align: right;
+  width: 8%;
+  float: right;
+}
+.btn5{
+  padding: 5px 15px;
+  color:#3EC6FF;
+  font-size: 15px;
+  border: 1px solid #3EC6FF;
+  border-radius: 5px;
+ background-color: #fff;
+}
+.btn5:hover{
+  background-color: #3EC6FF;
+  color:#fff;
+}
+.Case{
+  width: 100%;
+  overflow: hidden;
+}
+
+.case_top{
+  width: 100%;
+  height: 40px;
+  color: #fff;
+  padding: 5px 0 5px 20px;
+  background-color: #3EC6FF;
+}
+.case_top i{
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background: url("../../images/zyw/item.png") no-repeat;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+.case_top span,.case_top b{
+  color: #fff;
+}
+.case_bottom{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  overflow: hidden;
+  padding: 10px 10px 10px 30px;
+}
+.case_bottom p:first-child{
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+.case_bottom p:nth-child(2){
+  text-indent: 2em;
+  line-height: 18px;
+  margin-top: 10px;
+  color: #666;
+}
+.case_bottom p:nth-child(3){
+  text-align: right;
+  color: #8E8E8E;
+  font-size: 13px;
+}

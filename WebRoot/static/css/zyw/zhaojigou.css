@@ -1,0 +1,45 @@
+*{
+    margin:0;padding:0;
+}
+a{
+    text-decoration: none;color:#000;
+}
+ul{
+    list-style: none;
+}
+.zhaojigouBack{
+    width:100%;overflow:hidden;margin-top:50px;margin-bottom:90px;
+}
+.zhaojigouBox{
+    width:1160px;/* height:206px; */overflow:hidden;background-color:#fff;margin:0 auto;
+}
+.zhaojigouTop{
+    width:100%;height:46px;line-height: 46px;color:#000;font-size: 12px;margin:0;
+}
+.zhaojigouTop>span{
+    color:#38c4ff;
+}
+.zhaojigouMain{
+    width:1160px; /* height:160px; */overflow: hidden; background-color: #fff;border:1px solid #e5e5e5;font-size: 14px;padding:0 50px;
+}
+.zhaojigou00{
+     width:100%;height:40px;line-height: 40px;font-size: 15px;color: #000;margin-top:30px;
+ }
+.zhaojigou00>select{
+    width:92px;height:28px;line-height: 28px;border:1px solid #999;outline: none;margin-left:10px;border-radius: 4px;
+}
+.zhaojigou00>a.buxian{
+    padding:4px 20px;color:#38c4ff;border-radius: 4px;margin-left:20px;border:1px solid #38c4ff;
+}
+.type001{
+    width:100%;/* height:40px; */line-height: 40px;font-size: 14px;color: #000;margin-top:20px;
+}
+.type001>input{
+    margin-left:10px;
+}
+.type001>label{
+    margin-left:20px;font-size: 15px;
+}
+.type001>a.buxian{
+    padding:4px 20px;border-radius: 4px;margin-left:20px;border:1px solid #38c4ff;font-size: 15px;color:#38c4ff;
+}

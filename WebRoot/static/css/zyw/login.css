@@ -1,0 +1,67 @@
+.banBack{
+    width:100%;height:648px;margin-top:20px;background: url("../../images/zyw/adv1.jpg") no-repeat;
+}
+.banner{
+    width:1160px;height:648px;margin:0 auto;position: relative;
+}
+.loginBox{
+    width:530px;height:380px;border-radius:3px;
+    background-size:150px 100px;position: absolute;top:130px;right:0;background-color: #fff;
+    -webkit-box-shadow: 0 0 5px #ddd;
+    -moz-box-shadow: 0 0 5px #ddd;
+    box-shadow: 0 0 5px #ddd;
+}
+.loginBox p:first-child{
+    width: 100%;
+    text-align: center;
+    height: 120px;
+    line-height: 120px;
+}
+.loginBox p:first-child img{
+    width: 100px;
+    height: 100px;
+    margin-top: 10px;
+    border-radius: 50%;
+}
+.user{
+    width:396px;height:38px;line-height:38px;border:1px solid #c1c1c1;border-radius: 3px;margin:20px auto 0;
+}
+.user>input,.pass>input,.tel>input,.security>input{
+    width:213px;height:38px;line-height: 38px;padding-left: 10px;float:left;outline: none;border: none;
+}
+.pass,.tel,.security{
+    width:396px;height:38px;border:1px solid #c1c1c1;border-radius: 3px;margin:20px auto 0;
+}
+.user>a,.pass>a,.tel>a,.security>a{
+    display:block;width:44px;height:38px;;text-align:center;line-height:38px;background-color:#38c4ff;float:left;
+}
+.loginBox>p>a>img{
+    width:24px;height:24px;padding-top:6px;
+}
+.rem{
+    width:396px;height:38px;line-height:38px;margin:5px auto 0;
+}
+.rem>input{
+    width:17px;height:17px;float:left;margin-top:10px;
+}
+.rem>label{
+    color:#000;margin-left:10px;float: left;
+}
+.rem>a{
+    float:right;margin-left:20px;
+}
+.rem>a:focus{
+    color:#38c4ff;
+}
+.login{
+    display:block;width:143px;height:40px;text-align: center;line-height: 40px;background-color: #38c4ff;color:#fff;
+    margin: 20px auto 0;border-radius:20px;
+}
+.user>.btnSec{
+    width:128px;height:24px;line-height:24px;background-color: #fff;border-left: 1px solid #c1c1c1;color:#c1c1c1;float:right;
+    margin-top:7px;
+
+}
+.red{
+    color:#38c4ff;
+}

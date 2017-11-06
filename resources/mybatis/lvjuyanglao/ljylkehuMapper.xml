@@ -1,0 +1,1351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ljylkehuMapper">
+
+	<insert id="saveKehu" parameterType="pd">
+		insert into tb_user_kehu(
+			user_kuhu_id,
+			loginPassword,
+			payPassword,
+			phone,
+			headImg_url,
+			userName,
+			identityCard,
+			birthday,
+			sex,
+			age,
+			address,
+			registerTime,
+			last_login_time,
+			ip,
+			status,
+			bz,
+			jifen,
+			erweima_img,
+			guquan,
+			xunibi
+		)values(
+			#{user_kuhu_id},
+			#{loginPassword},
+			#{payPassword},
+			#{phone},
+			#{headImg_url},
+			#{userName},
+			#{identityCard},
+			#{birthday},
+			#{sex},
+			#{age},
+			#{address},
+			#{registerTime},
+			#{last_login_time},
+			#{ip},
+			#{status},
+			#{bz},
+			#{jifen},
+			#{erweima_img},
+			#{guquan},
+			#{xunibi}
+			
+		)
+	</insert>
+	
+	<!-- 轮播图列表 -->
+	<select id="getBannerImagesList" parameterType="pd" resultType="pd">
+			select * from sys_pictures where tidImg=#{tidImg} and type=2
+	</select>
+	<update id="updateKeHuXuNiBi" parameterType="pd">
+		update tb_user_kehu
+		set
+			xunibi=#{xunibi}
+		where user_kuhu_id = #{user_kuhu_id}	
+	</update>
+	<select id="getDoctorListByAddress" parameterType="pd" resultType="pd">
+		select 
+			sus.*,
+			COUNT(toy.user_shanghu_fid) num
+		from tb_user_shanghu sus
+		LEFT JOIN tb_order_yisheng toy ON toy.user_shanghu_fid=sus.user_shanghu_id
+		where 1=1
+			and identity = #{identity}
+			and renZhengState = 1
+			<if test="address!=null and address!=''">
+				and sus.address like CONCAT('%',#{address},'%')
+			</if>
+			<if test="category!=null and category!=''">
+				and sus.category = #{category}
+			</if>
+			<if test="keshiName!=null and keshiName!=''">
+				and sus.keshiName = #{keshiName}
+			</if>
+			<if test="dengji!=null and dengji!=''">
+				and sus.dengji = #{dengji}
+			</if>
+		GROUP BY sus.user_shanghu_id
+	</select>
+	
+	
+	<select id="getkeleiList" parameterType="pd" resultType="pd">
+		select * from sys_kelei sk where sk.parent_id ='0'
+	</select>
+	
+	
+	<!-- 根据父类id找子类 -->
+	<select id="getkeleiListByParentID" parameterType="pd" resultType="pd">
+		select * from sys_kelei sk where sk.parent_id =#{kelei_id}
+	</select>
+	
+	
+	<select id="getYaoshangList" parameterType="pd" resultType="pd">
+		<!--
+		select 
+			tus.user_shanghu_id,
+			tus.youName,
+			tus.category,
+			tus.mark,
+			tus.introduct,
+			tus.headImg,
+			tus.keshiName
+		from tb_user_shanghu tus
+		where tus.renZhengState = 1
+		and tus.identity = 3
+		-->
+		<!-- zjh 2017年6月29日10:04:04 -->
+		SELECT
+			tus.user_shanghu_id,
+			tus.youName,
+			tus.category,
+			tus.mark,
+			tus.introduct,
+			tus.goodField,
+			tus.headImg,
+			tus.keshiName,
+			COUNT(toy.order_yaoshang_id) num
+		FROM
+			tb_user_shanghu tus
+		LEFT JOIN tb_order_yaoshang toy ON tus.user_shanghu_id = toy.user_shanghu_fid
+		<where>  
+		<if test="searchName!=null and searchName!=''">
+			(tus.youName LIKE CONCAT(CONCAT('%', #{searchName}),'%') 
+			or tus.introduct LIKE CONCAT(CONCAT('%', #{searchName}),'%')
+			or tus.category LIKE CONCAT(CONCAT('%', #{searchName}),'%')
+			or tus.mark LIKE CONCAT(CONCAT('%', #{searchName}),'%')
+			or tus.keshiName LIKE CONCAT(CONCAT('%', #{searchName}),'%'))
+		</if>
+		and tus.renZhengState = 1
+		and tus.identity = 3
+		</where>
+		GROUP BY
+			tus.user_shanghu_id		
+		order by tus.top desc,tus.last_login_time desc
+	</select>
+	
+	<select id="getjigouList" parameterType="pd" resultType="pd">
+		<!--  
+		select 
+			tus.user_shanghu_id,
+			tus.youName,
+			tus.dengji,
+			tus.mark,
+			tus.introduct,
+			tus.headImg,
+			tus.keshiName,
+			tus.goodField
+		from tb_user_shanghu tus
+		where tus.renZhengState = 1
+		and tus.identity = 2
+		-->
+		<!-- zjh 2017年6月29日10:04:04 -->
+		SELECT
+			tus.user_shanghu_id,
+			tus.mark,
+			tus.headImg,
+			tus.keshiName,
+			tus.goodField,
+			tus.dengji,
+			tus.youName,
+			tus.introduct,
+			tus.linkMethod,
+			COUNT(toj.order_jigou_id) num
+		FROM
+			tb_user_shanghu tus
+		LEFT JOIN tb_order_jigou toj ON tus.user_shanghu_id = toj.user_shanghu_fid
+		<where>  
+		<if test="searchName!=null and searchName!=''">
+			(tus.youName LIKE CONCAT(CONCAT('%', #{searchName}),'%') 
+			or tus.introduct LIKE CONCAT(CONCAT('%', #{searchName}),'%')
+			or tus.dengji LIKE CONCAT(CONCAT('%', #{searchName}),'%')
+			or tus.mark LIKE CONCAT(CONCAT('%', #{searchName}),'%')
+			or tus.keshiName LIKE CONCAT(CONCAT('%', #{searchName}),'%')
+			or tus.goodField LIKE CONCAT(CONCAT('%', #{searchName}),'%'))
+		</if>
+		and tus.renZhengState=1
+		and tus.identity=2
+		</where>
+		GROUP BY
+			tus.user_shanghu_id
+		order by tus.top desc,tus.last_login_time desc
+	</select>
+	
+	
+	<select id="isExistUser" parameterType="pd" resultType="pd">
+		select userName,phone from tb_user_kehu 
+		where 1=1 
+		
+		<if test="userName!=''and userName!=null">
+		 and 
+			userName = #{userName}
+		</if> 
+		
+		<if test="phone!='' and phone!=null">
+		 and 
+			phone = #{phone}
+		</if>
+		
+	</select>
+	
+	<select id="getnewsandnoticeList" resultType="pd" parameterType="pd">
+		select * from sys_newsandnotice where category = #{category} and type=2
+	</select>
+	
+	<!-- 保存需求 -->
+	<insert id="saveXuqiu" parameterType="pd">
+  		insert into tb_xuqiu(
+  			xuqiu_id,
+  			sex,
+  			age,
+  			patient_name,
+  			disease,
+  			phone,
+  			fabu_time,
+  			symptom,
+  			address,
+  			type,
+  			user_kuhu_fid
+  		)values(
+  			#{xuqiu_id},
+  			#{sex},
+  			#{age},
+  			#{patient_name},
+  			#{disease},
+  			#{phone},
+  			#{fabu_time},
+  			#{symptom},
+  			#{address},
+  			#{type},
+  			#{user_kuhu_fid}
+  		)
+	</insert>
+	
+	<update id="updateXuqiu" parameterType="pd">
+		update tb_xuqiu set
+			sex=#{sex},
+  			age=#{age},
+  			patient_name=#{patient_name},
+  			disease=#{disease},
+  			phone=#{phone},
+  			fabu_time=#{fabu_time},
+  			symptom=#{symptom},
+  			address=#{address},
+  			type=#{type}
+  		where xuqiu_id=#{xuqiu_id}
+	</update>
+	
+	<update id="updatePassword" parameterType="pd">
+		update tb_user_kehu tuk
+		set tuk.loginPassword = #{loginPassword}
+		where tuk.phone = #{phone}
+	</update>
+	
+	
+	<insert id="saveXuqiuImgs" parameterType="pd">
+		insert into tb_xuqiu_img(
+			xuqiu_img_id,
+			xuqiu_fid,
+			img_url
+		)values(
+			#{xuqiu_img_id},
+			#{xuqiu_fid},
+			#{img_url}
+		)
+	</insert>
+	
+	<!-- 客户需求列表 -->
+	<select id="selectXuqiuList" parameterType="pd" resultType="pd">
+		select
+			xuqiu_id,
+  			sex,
+  			age,
+  			patient_name,
+  			disease,
+  			phone,
+  			fabu_time,
+  			symptom,
+  			address,
+			IFNULL(t2.img_url,'') img_url
+  		from tb_xuqiu
+		left join 
+		(
+				select GROUP_CONCAT(txi.img_url)img_url, txi.xuqiu_fid from 
+				tb_xuqiu_img txi
+				GROUP BY txi.xuqiu_fid
+		)t2
+ 		on t2.xuqiu_fid = tb_xuqiu.xuqiu_id
+ 		where user_kuhu_fid = #{user_kuhu_fid}
+  		order by fabu_time desc
+	
+	</select>
+	<delete id="deleteXuQiu" parameterType="pd">
+		delete from tb_xuqiu where xuqiu_id=#{xuqiu_id}
+	</delete>
+	
+	<select id="getDataOfXuQiuById" parameterType="pd" resultType="pd">
+		select * from tb_xuqiu where xuqiu_id=#{xuqiu_id}
+	</select>
+	<delete id="deleteXuQiuImg" parameterType="pd">
+		delete from tb_xuqiu_img where xuqiu_fid=#{xuqiu_id}
+	</delete>
+	<select id="getImgsByXuqiuID" parameterType="pd" resultType="pd">
+			select * from tb_xuqiu_img where xuqiu_fid = #{xuqiu_fid}
+	
+	</select>
+	
+	<delete id="deleteXuQiuImgById" parameterType="pd">
+		delete from tb_xuqiu_img where xuqiu_img_id=#{xuqiu_img_id}
+	</delete>
+	<!-- 修改会员信息表  完善个资料 -->
+	<update id="updateGerenInfo" parameterType="pd">
+		update tb_user_kehu tuk 
+			set 
+				tuk.sex = #{sex},
+				tuk.age = #{age},
+				tuk.realName = #{realName},
+				tuk.phone = #{phone},
+				tuk.address = #{address}
+			where user_kuhu_id = #{user_kuhu_id}
+	
+	</update>
+	
+	<!-- 个人中心 个人资料 -->
+	<select id="getDetailByID" parameterType="pd" resultType="pd">
+		select
+			tuk.user_kuhu_id,
+			tuk.realName,
+			tuk.address,
+			tuk.sex,
+			tuk.age,
+			tuk.phone,
+			tuk.money,
+			tuk.erweima_img,
+			tuk.guquan,
+			tuk.xunibi,
+			tuk.jifen
+		 from tb_user_kehu tuk
+		where tuk.user_kuhu_id = #{user_kuhu_id}
+	</select>
+	
+
+	<select id="getXinwenDetail" parameterType="pd" resultType="pd">
+		select * from sys_newsandnotice
+			where newsandnotice_id = #{new_id}
+	</select>
+	
+	<!-- 查看医生详情 -->
+	<select id="getYishengDetail" parameterType="pd" resultType="pd">
+		SELECT
+			tus.user_shanghu_id,
+			tusi.*,
+			COUNT(toy.user_shanghu_fid) num
+		FROM
+			tb_user_shanghu tus
+		LEFT JOIN tb_order_yaoshang toy ON toy.user_shanghu_fid=tus.user_shanghu_id
+		LEFT JOIN tb_user_shanghu_info tusi ON tusi.user_shanghu_fid=tus.user_shanghu_id and tusi.identity=4
+		WHERE
+			tus.user_shanghu_id = #{yisheng_id}
+	</select>
+	
+	
+	<!-- 医生服务列表 -->
+	<select id="getyishengFuwuList" parameterType="pd" resultType="pd">
+		SELECT
+			tbf.headImg,
+			tus.youName,
+			tus.position,
+			tus.mark,
+			tbf.fuwu_jibing_name,
+			tbf.jibing_introdaction,
+			tbf.fuwu_id,
+			tbf.price
+		FROM tb_fuwu tbf
+		LEFT JOIN tb_user_shanghu_info tus ON tus.user_shanghu_fid=tbf.user_shanghu_fid and tus.identity=4
+		WHERE 
+			tbf.user_shanghu_fid=#{yisheng_id}
+			and tbf.fuwu_jibing_name is not null 
+			and tbf.fuwu_jibing_name!=''
+			and tbf.type=#{type}
+		ORDER BY tbf.addTime desc
+	</select>
+	
+	<!-- 医生案例列表 -->
+	<select id="getyishengAnliList" parameterType="pd" resultType="pd">
+		select * from tb_anli_zhanshi
+			where user_shanghu_fid = #{yisheng_id}
+		order by addTime desc
+	</select>
+	
+		<!-- 查看案例详情 -->
+	<select id="getYishengAnliDetail" parameterType="pd" resultType="pd">
+		select * from tb_anli_zhanshi
+			where anli_zhanshi_id = #{anli_id}
+	</select>
+	
+	
+	<!-- 更新最后登录时间 -->
+	<update id="updateLastLoginTime" parameterType="pd">
+			UPDATE tb_user_kehu tuk 
+				set 
+					tuk.last_login_time = #{currentTime}
+			where tuk.user_kuhu_id = #{user_kuhu_id}
+	</update>
+	
+	
+	<!-- 医生列表 -->
+	<select id="getyishengList" parameterType="pd" resultType="pd">
+		select 
+			tus.user_shanghu_id,
+			<!-- tusi.youName, -->
+			IFNULL(tbf.fuwu_jibing_name, tusi.youName) youName,
+			tusi.position,
+			tusi.mark,
+			tusi.introduct,
+			IFNULL(tbf.headImg, tusi.headImg) headImg,
+			tusi.keshiName,
+			tusi.category,
+			tusi.goodField,
+			COUNT(toy.user_shanghu_fid) num
+		from tb_user_shanghu tus
+		LEFT JOIN tb_user_shanghu_info tusi ON tusi.user_shanghu_fid = tus.user_shanghu_id AND tusi.identity = 4
+		LEFT JOIN tb_order_yaoshang toy ON toy.user_shanghu_fid = tus.user_shanghu_id
+		inner JOIN tb_fuwu tbf1 ON tbf1.user_shanghu_fid = tus.user_shanghu_id AND tbf1.type = #{type}
+		LEFT JOIN tb_fuwu tbf ON tbf.user_shanghu_fid = tus.user_shanghu_id AND tbf.type = #{type} AND tbf.isDefault = 1
+		<where> 
+		<if test="ttag!='' and ttag!=null">
+			tusi.category = 4
+		</if> 
+		<if test="searchName!=null and searchName!=''">
+			and (tusi.youName LIKE CONCAT(CONCAT('%', #{searchName}),'%') 
+			or tusi.introduct LIKE CONCAT(CONCAT('%', #{searchName}),'%')
+			or tusi.position LIKE CONCAT(CONCAT('%', #{searchName}),'%')
+			or tusi.mark LIKE CONCAT(CONCAT('%', #{searchName}),'%')
+			or tusi.keshiName LIKE CONCAT(CONCAT('%', #{searchName}),'%'))
+		</if>
+		<if test="address!=null and address!=''">
+			and tusi.address like CONCAT('%',#{address},'%')
+		</if>
+		and tusi.renZhengState = 1
+		and tus.status=1
+		</where>
+		GROUP BY tus.user_shanghu_id
+		order by tusi.top desc,tus.last_login_time desc
+	</select>
+	
+
+	<!--  
+		每次登录成功后更新最新登录时间以及登录的IP地址
+	-->
+	<update id="updateIpAndTime" parameterType="pd">
+		UPDATE tb_user_shanghu tus
+		SET 
+			tus.last_login_time = #{last_login_time},
+			tus.ip = #{ip}
+		WHERE
+			tus.user_shanghu_id = #{user_shanghu_id}
+	</update>
+	<!--  
+		更新（保存）用户个人信息
+	-->
+	<update id="updatePersonInformation" parameterType="pd">
+		UPDATE tb_user_shanghu tus
+		SET 
+			tus.headImg = #{headImg},
+			tus.youName = #{youName},
+			tus.position = #{position},
+			tus.mark = #{mark},
+			tus.linkMethod = #{linkMethod},
+			tus.address = #{address}
+		WHERE
+			tus.user_shanghu_id = #{user_shanghu_id}
+	</update>
+	<!--  
+		更新（保存）用户个人简介或者擅长领域
+	-->
+	<update id="updatePersonIntroductOrGoodsField" parameterType="pd">
+		UPDATE tb_user_shanghu tus
+		SET 
+			<if test="introduct!='' and introduct!=null">
+				tus.introduct = #{introduct}
+			</if>
+			<if test="goodField!='' and goodField!=null">
+				tus.goodField = #{goodField}
+			</if>
+		WHERE
+			tus.user_shanghu_id = #{user_shanghu_id}
+	</update>
+	<!--  
+		根据用户名去查询改用户是否存在
+	-->
+	<select id="getDataByUserName" parameterType="pd" resultType="pd">
+		select 
+			tuk.userName,
+			tuk.phone
+		 from tb_user_kehu tuk 
+		 where tuk.userName=#{userName}
+	</select>
+	
+	
+	<!-- 根据手机号查询该用户是否存在 -->
+	<select id="getDataByPhone" parameterType="pd" resultType="pd">
+		select 
+			tuk.userName,
+			tuk.phone
+		 from tb_user_kehu tuk 
+		 where tuk.phone=#{phone}
+	</select>
+	
+	
+	<!--  
+		根据手机号修改登录密码
+	-->
+	<update id="updatePasswordByPhone" parameterType="pd">
+		UPDATE tb_user_shanghu tus
+		SET 
+			tus.loginPassword = #{loginPassword}
+		WHERE
+			tus.phone = #{phone}
+	</update>
+	<!--  
+		根据ID获取用户信息
+	-->
+	<select id="getDataById" parameterType="pd" resultType="pd">
+		SELECT 
+			tus.*
+			FROM tb_user_shanghu tus
+		WHERE
+			tus.user_shanghu_id = #{user_shanghu_id}
+	</select>
+	<!--  
+		根据登录名和密码获取对象信息
+	-->
+	<select id="getDataByUserNameAndPassword" parameterType="pd" resultType="pd">
+		SELECT 
+			tus.*
+		FROM tb_user_kehu tus
+		<where>
+			tus.loginPassword=#{loginPassword}
+			<if test="userName!='' and userName!=null">
+				AND tus.userName=#{userName}
+			</if>
+			<if test="phone!='' and phone!=null">
+				AND tus.phone=#{phone}
+			</if>
+		</where>
+	</select>
+	<!-- ////////////////////////服务/////////////////////////// -->
+	<!-- 
+		保存服务
+	 -->
+	<insert id="saveService" parameterType="pd">
+		INSERT INTO tb_fuwu (
+			fuwu_id,
+			headImg,
+			realName,
+			position,
+			biaoZhu,
+			fuwu_jibing_name,
+			price,
+			addTime,
+			user_shanghu_fid
+		)VALUES(
+			#{fuwu_id},
+			#{headImg},
+			#{realName},
+			#{position},
+			#{biaoZhu},
+			#{fuwu_jibing_name},
+			#{price},
+			#{addTime},
+			#{user_shanghu_fid}
+		)
+	</insert>
+	<!--  
+		获取服务列表
+	-->
+	<select id="getServiceList" parameterType="pd" resultType="pd">
+		SELECT
+			tbf.fuwu_id,
+			tbf.realName,
+			tbf.position,
+			tbf.headImg,
+			tbf.biaoZhu,
+			tbf.fuwu_jibing_name,
+			tbf.price
+		FROM tb_fuwu tbf
+		WHERE 
+			tbf.user_shanghu_fid=#{user_shanghu_fid}
+			ORDER BY tbf.addTime desc
+	</select>
+	<!--  
+		根据ID获取对象信息
+	-->
+	<select id="getDataByIdOfService" parameterType="pd" resultType="pd">
+		SELECT
+			tbf.fuwu_id,
+			tbf.realName,
+			tbf.position,
+			tbf.headImg,
+			tbf.biaoZhu,
+			tbf.fuwu_jibing_name,
+			tbf.price
+		FROM tb_fuwu tbf
+		WHERE 
+			tbf.fuwu_id=#{fuwu_id}
+	</select>
+	<!--  
+		更新指定用户信息
+	-->
+	<update id="updateService" parameterType="pd">
+		UPDATE tb_fuwu
+		SET
+			headImg=#{headImg},
+			realName=#{realName},
+			position=#{position},
+			biaoZhu=#{biaoZhu},
+			fuwu_jibing_name=#{fuwu_jibing_name},
+			price=#{price},
+			addTime=#{addTime}
+		WHERE
+			fuwu_id=#{fuwu_id}
+	</update>
+	
+	<delete id="deleteService" parameterType="pd">
+		delete from tb_fuwu where fuwu_id=#{fuwu_id}
+	</delete>
+	<!-- ////////////////////////开店申请//////////////////////////////// -->
+	<!--  
+		添加申请图片
+	-->
+	<insert id="saveApplyImgPath" parameterType="pd">
+		INSERT INTO tb_imgath_apply(
+			imgpath_apply_id,
+			imgPath,
+			shenqingMethod,
+			user_shanghu_fid
+		)VALUES(
+			#{imgpath_apply_id},
+			#{imgPath},
+			#{shenqingMethod},
+			#{user_shanghu_fid}
+		)
+	</insert>
+	<!--  
+		改变开店申请状态和申请时间
+	-->
+	<update id="updateStateAndTime" parameterType="pd">
+		UPDATE tb_user_shanghu
+		SET
+			renZhengState=#{renZhengState},
+			renZhengApplyTime=#{renZhengApplyTime}
+		WHERE
+			user_shanghu_id=#{user_shanghu_id}
+	</update>
+	
+	
+	
+	<!-- 查询积分 -->
+	<select id="getjifen" parameterType="pd" resultType="pd">
+ 	 			select 
+ 	 		fx1_num,
+ 	 		fx2_num
+ 	 		 	from sys_jifen
+ 	 		 	
+	</select>
+	
+	<select id="getGuquanAndXunibi" parameterType="pd" resultType="pd">
+		select tuk.guquan,tuk.xunibi from tb_user_kehu tuk 
+			where tuk.user_kuhu_id = #{user_kuhu_id}
+	</select>
+	
+	
+	<select id="getErweimaImgById" parameterType="pd" resultType="pd">
+		select erweima_img from tb_user_kehu
+		where user_kuhu_id = #{user_kuhu_id}
+	</select>
+	
+	
+	
+	<!-- 分销 -->
+	<!-- 插入数据到分销表 -->
+	<insert id="saveDingji" parameterType="pd">
+		insert into tb_fenxiao_dingji(
+			fx_id,
+			dingji_id,
+			type
+		)values(
+			#{fx_id},
+			#{dingji_id},
+			#{type}
+		)
+	</insert>
+	
+	<insert id="saveYiji" parameterType="pd">
+		insert into tb_fenxiao_yiji(
+			p_id,
+			yiji_id,
+			type
+		)values(
+			#{p_id},
+			#{yiji_id},
+			#{type}
+		)
+	</insert>
+	
+	<insert id="saveErji" parameterType="pd">
+		insert into tb_fenxiao_erji(
+			p_id,
+			erji_id,
+			type
+		)values(
+			#{p_id},
+			#{erji_id},
+			#{type}
+		)
+	</insert>
+	
+
+	<select id="chaErji" parameterType="pd" resultType="pd">
+		select 
+			fenxiao_id,
+			dingji_id,
+			yiji_id,
+			erji_id,
+			type
+		from tb_fenxiao
+		where erji_id = #{taget_id}
+	</select>
+	
+	
+	<select id="chaYiji" parameterType="pd" resultType="pd">
+		select 
+			max(fenxiao_id)fenxiao_id,
+			dingji_id,
+			yiji_id,
+			erji_id,
+			type
+		from tb_fenxiao
+		where yiji_id = #{taget_id}
+	</select>
+	
+	
+	<select id="chaDingji" parameterType="pd" resultType="pd">
+	select 
+			max(fenxiao_id)fenxiao_id,
+			dingji_id,
+			yiji_id,
+			erji_id,
+			type
+		from tb_fenxiao
+		where dingji_id = #{taget_id}
+	</select>
+	
+	
+		
+	<!-- 修改积分 通过二维码注册 他的上级得积分 -->
+	<update id="updateJifenByEwmRegister" parameterType="pd">
+			update tb_user_kehu tuk
+			set tuk.jifen = #{jifen}
+			where user_kuhu_id  = #{tjr_user_id}
+	</update>
+	
+	
+	
+	<insert id="saveFenXiao" parameterType="pd">
+		insert into tb_fenxiao(
+			fenxiao_id,
+			dingji_id,
+			yiji_id,
+			erji_id,
+			type
+		)values(
+			#{fenxiao_id},
+			#{dingji_id},
+			#{yiji_id},
+			#{erji_id},
+			#{type}
+		)
+	</insert>	
+	
+	
+	<select id="getMyjifen" parameterType="pd" resultType="pd">
+			select jifen from tb_user_kehu
+			where user_kuhu_id = #{user_kuhu_id}
+	</select>
+	
+	<select id="getYijiTeamList" parameterType="pd" resultType="pd">
+			select 
+				tuk.userName,
+				tuk.age,
+				tuk.address
+				from tb_user_kehu tuk
+			where tuk.user_kuhu_id in(
+					select tf.yiji_id as uid from tb_fenxiao tf
+						where tf.dingji_id  = #{user_kuhu_id}
+						and tf.type =1
+						UNION
+						select tf.erji_id from tb_fenxiao tf
+						where tf.yiji_id  = #{user_kuhu_id}
+						and tf.type =1
+			)
+		
+	</select>
+	
+	<select id="getYijiTeamListCount" parameterType="pd" resultType="pd">
+			select count(1)num from (
+				select 
+								tuk.userName,
+								tuk.age,
+								tuk.address
+								from tb_user_kehu tuk
+							where tuk.user_kuhu_id in(
+									select tf.yiji_id as uid from tb_fenxiao tf
+										where tf.dingji_id  = #{user_kuhu_id}
+										and tf.type =1
+										UNION
+										select tf.erji_id from tb_fenxiao tf
+										where tf.yiji_id  = #{user_kuhu_id}
+										and tf.type =1
+							)
+				) tt
+
+	</select>
+	
+	<select id="getErjiTeamList" parameterType="pd" resultType="pd">
+		select 
+			tuk.userName,
+			tuk.age,
+			tuk.address
+		from tb_user_kehu tuk
+			where tuk.user_kuhu_id in (
+			select tf2.erji_id from tb_fenxiao tf2
+				where tf2.yiji_id in (
+					select tf.yiji_id from tb_fenxiao tf
+						where tf.dingji_id = #{user_kuhu_id}
+					
+			)
+			and tf2.erji_id is not null 
+			and tf2.erji_id!=''
+			and tf2.type =1
+		)
+	</select>
+	
+	<select id="getErjiTeamListCount" parameterType="pd" resultType="pd">
+		select count(1)num from (
+			select 
+						tuk.userName,
+						tuk.age,
+						tuk.address
+					from tb_user_kehu tuk
+						where tuk.user_kuhu_id in (
+						select tf2.erji_id from tb_fenxiao tf2
+							where tf2.yiji_id in (
+								select tf.yiji_id from tb_fenxiao tf
+									where tf.dingji_id = #{user_kuhu_id}
+								
+						)
+						and tf2.erji_id is not null 
+						and tf2.erji_id!=''
+						and tf2.type =1
+					) 
+			)tt
+	</select>
+	
+	
+	<!-- 更新一级字段的操作 -->
+	<select id="selectYijiByDingji" parameterType="pd" resultType="pd">
+	select max(fenxiao_id)fenxiao_id, IFNULL(yiji_id,'')yiji_id from tb_fenxiao  
+		where dingji_id =  #{dingji_id}
+	</select>
+	
+	<update id="updateYiji" parameterType="pd">
+		update tb_fenxiao 
+			set yiji_id = #{tag_id}
+		where dingji_id = #{dingji_id}
+	</update>
+	
+	<!-- 插入到一级字段 意思是 顶级推荐给多个人了 有多个一级 -->
+	<insert id="insertYiji" parameterType="pd">
+		insert into tb_fenxiao(
+			fenxiao_id,
+			dingji_id,
+			yiji_id,
+			erji_id,
+			type
+		)values(
+			#{fenxiao_id},
+			#{dingji_id},
+			#{yiji_id},
+			#{erji_id},
+			#{type}
+		)
+	</insert>
+	
+	
+	<!-- 以下是更新二级字段的操作 -->
+	<!-- 查到为空 则更新 不为空则新增 -->
+	<select id="selectErjiByYiji" parameterType="pd" resultType="pd">
+	select max(fenxiao_id)fenxiao_id, IFNULL(erji_id,'')erji_id 
+			from tb_fenxiao where yiji_id = #{yiji_id} 
+	</select>
+	
+	<update id="updateErji" parameterType="pd">
+		update tb_fenxiao 
+			set erji_id = #{tag_id}
+		where yiji_id = #{yiji_id}
+	</update>
+	
+	<!-- 插入到二级字段 意思是 一级推荐给多个人了 有多个二级 -->
+	<insert id="insertErji" parameterType="pd">
+		insert into tb_fenxiao(
+			fenxiao_id,
+			dingji_id,
+			yiji_id,
+			erji_id,
+			type
+		)values(
+			#{fenxiao_id},
+			#{dingji_id},
+			#{yiji_id},
+			#{erji_id},
+			#{type}
+		)
+	</insert>
+	
+	<select id="showChangjianjibingDetailByID" parameterType="pd" resultType="pd">
+				select * from sys_yunyingbs scj
+			where scj.changjianjibing_id = #{changjianjibing_id}
+	</select>
+	
+	
+	<select id="showYnzzDetailByID" parameterType="pd" resultType="pd">
+				select * from sys_ynzz scj
+			where scj.ynzz_id = #{ynzz_id}
+	</select>
+	
+	
+	<!-- 根据字母查出 疾病列表 -->
+	<select id="getDiseaseListByZimu" parameterType="pd" resultType="pd">
+		<!-- SELECT 
+			*
+		FROM sys_changjianjibing scj
+		where   
+		scj.pinyin LIKE LOWER(CONCAT(#{zimu}, '%'))
+		ORDER BY addTime DESC -->
+		SELECT 
+			changjianjibing_id,
+			jibing_name
+		FROM sys_yunyingbs
+		
+		ORDER BY addTime ASC
+	</select>
+	
+	
+	<!-- 根据字母查出 疾病列表 -->
+	<select id="getYnzzListByZimu" parameterType="pd" resultType="pd">
+		SELECT 
+			*
+		FROM sys_ynzz scj
+		where   
+		scj.ynzz_pinyin LIKE LOWER(CONCAT(#{zimu}, '%'))
+		ORDER BY add_time DESC
+	</select>
+	
+	
+	<!-- 疑难杂症 功能模块-->
+	<insert id="saveYnzz" parameterType="pd">
+  		insert into sys_ynzz(
+  			ynzz_id,
+  			ynzz_name,
+  			ynzz_context,
+  			ynzz_pinyin,
+  			add_time
+  		)values(
+  			#{ynzz_id},
+  			#{ynzz_name},
+  			#{ynzz_context},
+  			#{ynzz_pinyin},
+  			#{add_time}
+  		)
+	</insert>
+	
+	<update id="updateYnzzByID" parameterType="pd">
+		update sys_ynzz set
+			ynzz_name = #{ynzz_name},
+			ynzz_context = #{ynzz_context},
+			ynzz_pinyin=#{ynzz_pinyin},
+  			add_time=#{add_time}
+		where ynzz_id = #{ynzz_id}
+	</update>
+	
+	<select id="getYnzzlistPage" parameterType="page" resultType="pd">
+		select * from sys_ynzz
+	</select>
+	
+	<select id="getNameByID" parameterType="pd" resultType="pd">
+		select * from sys_ynzz where ynzz_id = #{ynzz_id}
+	</select>
+	
+	<!--  
+		根据ID删除指定对象信息
+	-->
+	<delete id="deleteYnzzById" parameterType="pd">
+		DELETE 
+		FROM sys_ynzz
+		WHERE ynzz_id in
+		<foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	
+	<!--  
+		根据疾病名称获取对象信息
+	-->
+	<select id="getYnzzByName" parameterType="pd" resultType="pd">
+		SELECT
+			*
+		FROM sys_ynzz
+		WHERE 
+			ynzz_name=#{ynzz_name}
+	</select>
+	
+	<select id="getYnzzList" parameterType="page" resultType="pd">
+		select * from sys_ynzz
+	</select>
+	
+	<select id="getjigouTypeList" parameterType="page" resultType="pd">
+		SELECT 
+			*
+		FROM sys_jigou_type 
+		ORDER BY addTime DESC
+	</select>
+	
+	<select id="getYishengOrderList" parameterType="pd" resultType="pd">
+		select 
+			toy.order_yisheng_id,
+			toy.user_shanghu_fid,
+			toy.kehuPrice,
+			tus.youName,
+			tus.identity,
+			tus.position,
+			tus.mark,
+			toy.fuwu_jibing_name,
+			toy.kehuPrice price,
+			toy.price shanghu_price,
+			tus.headImg,
+			toy.order_yisheng_id,
+			toy.pingjia_flag
+		 from tb_order_yisheng toy
+		left join tb_user_shanghu tus on tus.user_shanghu_id = toy.user_shanghu_fid
+		where toy.user_kuhu_fid = #{user_kuhu_fid}
+		and order_state =#{order_state}
+	</select>
+	
+	<select id="getYaoshangOrderList" parameterType="pd" resultType="pd">
+		select 
+			toy.order_yaoshang_id,
+			toy.user_shanghu_fid,
+			toy.kehuPrice,
+			toy.order_number,
+			tus.youName,
+			tus.category,
+			tus.identity,
+			tus.mark,
+			toy.fuwu_name,
+			toy.type,
+			toy.kehuPrice price,
+			toy.totalPrice shanghu_price,
+			tus.headImg,
+			toy.pingjia_flag,
+			toy.order_yaoshang_id
+		 from tb_order_yaoshang toy
+		left join tb_user_shanghu tus on tus.user_shanghu_id = toy.user_shanghu_fid
+		where toy.user_kuhu_fid = #{user_kuhu_fid}
+		and order_state =#{order_state}
+	</select>
+	
+	<select id="getjigouOrderList" parameterType="pd" resultType="pd">
+		select 
+			toy.order_jigou_id,
+			toy.user_shanghu_fid,
+			toy.kehuPrice,
+			tus.youName,
+			tus.identity,
+			tus.dengji,
+			tus.mark,
+			toy.fuwu_name,
+			toy.kehuPrice price,
+			toy.price shanghu_price,
+			tus.headImg,
+			toy.pingjia_flag,
+			toy.order_jigou_id
+		 from tb_order_jigou toy
+		left join tb_user_shanghu tus on tus.user_shanghu_id = toy.user_shanghu_fid
+		where toy.user_kuhu_fid = #{user_kuhu_fid}
+		and order_state =#{order_state}
+	</select>
+	
+	<select id="getAmountById" parameterType="pd" resultType="pd">
+		select 
+			tus.chengjiaoAmount,
+			tus.xianjinAmount
+		 from tb_user_shanghu tus
+		where tus.user_shanghu_id = #{user_shanghu_id}
+	
+	</select>
+	
+	<update id="updateAmountById" parameterType="pd">
+			update tb_user_shanghu tus
+				set tus.chengjiaoAmount = #{chengjiaoAmount},
+					tus.xianjinAmount = #{xianjinAmount}
+				where tus.user_shanghu_id = #{user_shanghu_id}
+	</update>
+	
+	<update id="updateYishengOrderState" parameterType="pd">
+			update tb_order_yisheng
+			set order_state =1,
+			complete_time = #{complete_time}
+			where order_yisheng_id = #{order_id}
+	</update>
+	
+	<update id="updateYaoshangOrderState" parameterType="pd">
+		update tb_order_yaoshang
+		set order_state = 1,
+		complete_time = #{complete_time}
+		where order_yaoshang_id = #{order_id}
+	</update>
+	
+	<update id="updatejigouOrderState" parameterType="pd">
+		update tb_order_jigou
+		set order_state =1,
+		complete_time = #{complete_time}
+		where order_jigou_id = #{order_id}
+	</update>
+	
+	
+	<!-- 获取积分和股权信息 -->
+	<select id="getjgDataById" parameterType="pd" resultType="pd">
+		select jifen,guquan from tb_user_kehu
+		where user_kuhu_id = #{user_kehu_id}
+	</select>
+	
+	<!--  
+		更新股权和积分信息
+	-->
+	<update id="updateJiFenAndGuQuan" parameterType="pd">
+		UPDATE tb_user_kehu tus
+		SET 
+			tus.jifen = #{jifen},
+			tus.guquan = #{guquan}
+		WHERE
+			tus.user_kuhu_id = #{user_kehu_id}
+	</update>
+	
+	
+	<select id="getKehuHeadImgAnduserName" parameterType="pd" resultType="pd">
+		select 
+			tuk.user_kuhu_id,
+			tuk.headImg_url,
+			tuk.realName
+		 from tb_user_kehu tuk
+		 where user_kuhu_id = #{user_kehu_id}
+	</select>
+	
+	<select id="getShanghuHeadImgAnduserName" parameterType="pd" resultType="pd">
+			
+			select 
+				tuk.user_shanghu_id,
+				tuk.headImg,
+				tuk.youName
+			 from tb_user_shanghu tuk
+			 where user_shanghu_id = #{user_shanghu_id}
+	</select>
+	
+	<select id="fenxiangEwm" parameterType="pd" resultType="pd">
+			select erweima_img from tb_user_kehu
+				where user_kuhu_id = #{user_kuhu_id}
+	</select>
+	
+	<select id="fenxiangEwms" parameterType="pd" resultType="pd">
+			select erWeiMaImg from tb_user_shanghu
+				where user_shanghu_id = #{user_shanghu_id}
+	</select>
+	
+	<!-- 提成分销 查是不是二级 -->
+	<select id="selectIsErji" parameterType="pd" resultType="pd">
+			select * from tb_fenxiao where erji_id = #{user_kehu_id}
+	</select>
+	
+	<!-- 提成分销 查是不是一级 -->
+	<select id="selectIsYiji" parameterType="pd" resultType="pd">
+			select * from tb_fenxiao where yiji_id = #{user_kehu_id} GROUP BY yiji_id
+	</select>
+	
+	<select id="selectFenXiaoTichen" parameterType="pd" resultType="pd">
+	SELECT 
+			*
+		FROM sys_bili_fenxiao 
+	</select>
+	
+	<select id="getMoneyBykehuID" parameterType="pd" resultType="pd">
+		select money from tb_user_kehu where user_kuhu_id = #{user_kehu_id}
+	</select>
+	
+	<select id="getMoneyByShangHuID" parameterType="pd" resultType="pd">
+		select xianjinAmount from tb_user_shanghu where user_shanghu_id = #{user_shanghu_id}
+	</select>
+	
+	<update id="updateMoneyBykehuID" parameterType="pd">
+		update tb_user_kehu
+		set money = #{money}
+		where user_kuhu_id = #{user_kehu_id}
+	</update>
+	
+	<update id="updateMoneyByshangHuID" parameterType="pd">
+		update tb_user_shanghu
+		set xianjinAmount = #{money}
+		where user_shanghu_id = #{user_shanghu_id}
+	</update>
+	
+	
+	<select id="getUserKehuIdByOrderNumber" parameterType="pd" resultType="pd">
+		select user_kuhu_fid from tb_temp where order_number = #{order_number}
+	</select>
+	
+	
+	<!-- 提成分销金额记录 -->
+	<insert id="insertTichenMoneyRecord" parameterType="pd">
+		insert into tb_tichen_money(
+			tichen_id,
+			user_fid,
+			fenxiao_name,
+			money,
+			type,
+			insert_time
+		)values(
+			#{tichen_id},
+			#{user_fid},
+			#{fenxiao_name},
+			#{money},
+			#{type},
+			#{insert_time}
+		)
+	</insert>
+	
+	<select id="selectFenxiaoMoenyList" parameterType="pd" resultType="pd">
+		select * from tb_tichen_money where user_fid=#{user_fid} and type=#{type}
+		order by insert_time desc
+	</select>
+	
+	
+	<select id="savePingjia" parameterType="pd">
+		insert into tb_pingjia(
+			pj_id,
+			pj_context,
+			user_fid,
+			user_shanghu_id,
+			identity,
+			grade,
+			pj_time
+		)values(
+			#{pj_id},
+			#{pj_context},
+			#{user_fid},
+			#{user_shanghu_id},
+			#{identity},
+			#{grade},
+			#{pj_time}
+		)
+	</select>
+	
+	<update id="updateYishengFlagState" parameterType="pd">
+		update tb_order_yisheng set pingjia_flag=1 where order_yisheng_id = #{tid}
+	</update>
+	
+	<update id="updateYaoshangFlagState" parameterType="pd">
+		update tb_order_yaoshang set pingjia_flag=1 where order_yaoshang_id = #{tid}
+	</update>
+	
+	<update id="updatejigouFlagState" parameterType="pd">
+		update tb_order_jigou set pingjia_flag=1 where order_jigou_id = #{tid}
+	</update>
+	
+	<select id="pingjiajiluList" parameterType="pd" resultType="pd" >
+		select 
+			tp.grade,
+			tp.pj_context,
+			tp.pj_time,
+			tuk.userName
+		 from tb_pingjia  tp
+		left join tb_user_kehu tuk on tuk.user_kuhu_id = tp.user_fid
+		where user_shanghu_id = #{user_shanghu_id}
+		order by pj_time desc
+	</select>
+	
+	<select id="getTimingTaskList" parameterType="pd" resultType="pd">
+			SELECT
+				toy.price shanghu_price,
+				toy.kehuPrice price,
+				toy.user_kuhu_fid,
+				toy.create_order_time,
+				toy.order_state,
+				toy.order_yisheng_id,
+				toy.user_shanghu_fid,
+				IFNULL(1,toy.order_yisheng_id) as type
+			FROM
+				tb_order_yisheng toy
+			WHERE
+				toy.order_state = 2
+				and user_kuhu_fid = #{user_kuhu_fid}
+			UNION
+				SELECT
+					toy2.price shanghu_price,
+					toy2.kehuPrice price,
+					toy2.user_kuhu_fid,
+					toy2.create_order_time,
+					toy2.order_state,
+					toy2.order_yaoshang_id,
+					toy2.user_shanghu_fid,
+					IFNULL(3,toy2.order_yaoshang_id) as type
+ 				FROM
+					tb_order_yaoshang toy2
+				WHERE
+					toy2.order_state = 2
+					and user_kuhu_fid = #{user_kuhu_fid}
+				UNION
+					SELECT
+						toj.price shanghu_price,
+						toj.kehuPrice price,
+						toj.user_kuhu_fid,
+						toj.create_order_time,
+						toj.order_state,
+						toj.order_jigou_id,
+						toj.user_shanghu_fid,
+						IFNULL(2,toj.order_jigou_id) as type
+					FROM
+						tb_order_jigou toj
+					WHERE
+						toj.order_state = 2
+						and user_kuhu_fid = #{user_kuhu_fid}
+	</select>
+	
+	
+</mapper>
